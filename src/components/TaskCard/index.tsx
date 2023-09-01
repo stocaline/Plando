@@ -60,14 +60,14 @@ export function TaskCard({ data }: Props) {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={data.finished_at == "" ? styles.container : styles.containerStatusDone}>
             <View style={[styles.tag, {backgroundColor: data.color}]}></View>
             <View style={styles.content}>
                 <TouchableOpacity
                     style={styles.cardName}
                     onPress={() => handleOpenTask()}
                 >
-                    <Text>{data.title}</Text>
+                    <Text style={{color: "#303030", fontWeight: "600"}}>{data.title}</Text>
                 </TouchableOpacity>
                 <CheckBox
                     checked={data.finished_at == "" ? false : true}
@@ -86,6 +86,15 @@ export const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 10,
         overflow: 'hidden'
+    },
+    containerStatusDone: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        overflow: 'hidden',
+        opacity: 0.5,
     },
     content: {
         display: 'flex',
