@@ -98,7 +98,7 @@ export default function ViewTask({ route }) {
                 />
             </View>
             <View style={styles.container}>
-                <Text style={styles.text}>Desrição: {task.description}</Text>
+                <Text style={styles.text}>Descrição: {task.description}</Text>
                 <Text style={styles.text}>Prioridade: {task.priority}</Text>
                 <Text style={styles.text}>Criado em: {dateFormat(task.created_at.slice(0, 10))}</Text>
                 {task.finished_at != "" ?
