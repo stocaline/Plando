@@ -28,14 +28,14 @@ export default function Home() {
         try {
             const response = realm.objects("Task").filtered('historic == false');
             //@ts-ignore
-            setData(response)
+            orderTasks(response)
 
         } catch (e) {
             console.log(e)
         } finally {
             realm.close
         }
-        orderTasks()
+        
     }
 
     async function doVerification() {
@@ -71,8 +71,7 @@ export default function Home() {
         }
     }
 
-    function orderTasks() {
-        var tasks = data
+    function orderTasks(tasks:TaskProps[]) {
         if (tasks) {
             var taskPriority1: TaskProps[] = []
             var taskPriority2: TaskProps[] = []
