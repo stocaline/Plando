@@ -1,7 +1,6 @@
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
 import { SafeAreaView, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
-import { ColorPicker } from "react-native-color-picker";
 import { getRealm } from "../../database/realm";
 import uuid from "react-native-uuid"
 
@@ -54,6 +53,7 @@ export default function NewTask() {
                 value={title}
                 onChangeText={setTitle}
                 placeholder="Título da tarefa"
+                placeholderTextColor="#303030" 
             />
 
             <Text style={styles.label}>Descrição:</Text>
@@ -62,6 +62,7 @@ export default function NewTask() {
                 value={description}
                 onChangeText={setDescription}
                 placeholder="Descrição da tarefa"
+                placeholderTextColor="#303030" 
             />
 
             <Text style={styles.label}>Prioridade:</Text>
@@ -70,9 +71,9 @@ export default function NewTask() {
                 onValueChange={setPriority}
                 style={styles.picker}
             >
-                <Picker.Item label="Opcional" value="opcional" />
-                <Picker.Item label="Normal" value="normal" />
-                <Picker.Item label="Urgente" value="urgente" />
+                <Picker.Item label="Opcional" value="Opcional" />
+                <Picker.Item label="Normal" value="Normal" />
+                <Picker.Item label="Urgente" value="Urgente" />
             </Picker>
 
             <Text style={styles.label}>Selecione uma cor para tarefa:</Text>
@@ -113,13 +114,13 @@ export const styles = StyleSheet.create({
         padding: 10,
         fontSize: 16,
         marginBottom: 10,
-        color: "#000",
     },
     picker: {
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
         marginBottom: 10,
+        color: "#303030",
     },
     colorContainer: {
         flexDirection: 'row',

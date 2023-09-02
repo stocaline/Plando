@@ -35,7 +35,7 @@ export default function Home() {
         } finally {
             realm.close
         }
-
+        orderTasks()
     }
 
     async function doVerification() {
@@ -68,6 +68,32 @@ export default function Home() {
             }
         } catch (error) {
             console.error('Erro ao verificar:', error);
+        }
+    }
+
+    function orderTasks() {
+        var tasks = data
+        if (tasks) {
+            var taskPriority1: TaskProps[] = []
+            var taskPriority2: TaskProps[] = []
+            var taskPriority3: TaskProps[] = []
+            var taskFinished: TaskProps[] = []
+            tasks.forEach(task => {
+                if (task.finished_at == "") {
+                    if (task.priority == "Urgente") {
+                        taskPriority1.push(task)
+                    } else if (task.priority == "Normal") {
+                        taskPriority2.push(task)
+                    } else {
+                        taskPriority3.push(task)
+                    }
+                } else {
+                    taskFinished.unshift(task)
+                }
+            })
+            var orderedTasks = taskPriority1.concat(taskPriority2, taskPriority3, taskFinished);
+            setData(orderedTasks)
+
         }
     }
 
@@ -128,6 +154,7 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(0, 0, 0, 0.3)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
+        marginBottom: 10,
     },
 
     list: {
