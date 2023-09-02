@@ -104,6 +104,7 @@ export const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         marginBottom: 5,
+        color: "#000",
     },
     input: {
         borderWidth: 1,
@@ -112,6 +113,7 @@ export const styles = StyleSheet.create({
         padding: 10,
         fontSize: 16,
         marginBottom: 10,
+        color: "#000",
     },
     picker: {
         borderWidth: 1,

@@ -3,7 +3,7 @@ import { SafeAreaView, Text, TouchableOpacity, View, StyleSheet, TextInput } fro
 import { CheckBox } from "react-native-elements";
 import { getRealm } from "../../database/realm";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-
+import Icon from "react-native-vector-icons/Feather";
 
 type TaskProps = {
     _id: string;
@@ -72,6 +72,14 @@ export default function ViewTask({ route }) {
         setTitle(text);
     }
 
+    function dateFormat(date: string) {
+        const year = date.slice(0, 4)
+        const mouth = date.slice(5, 7)
+        const day = date.slice(8, 10)
+        const dateFormated = `${day}/${mouth}/${year}`
+        return dateFormated
+    }
+
     useFocusEffect(useCallback(() => {
         if (task.finished_at != "") {
             setIsChecked(true)
@@ -90,18 +98,18 @@ export default function ViewTask({ route }) {
                 />
             </View>
             <View style={styles.container}>
-                <Text>Desrição: {task.description}</Text>
-                <Text>{task.priority}</Text>
-                <Text>{task.created_at.slice(0, 10)}</Text>
+                <Text style={styles.text}>Desrição: {task.description}</Text>
+                <Text style={styles.text}>Prioridade: {task.priority}</Text>
+                <Text style={styles.text}>Criado em: {dateFormat(task.created_at.slice(0, 10))}</Text>
                 {task.finished_at != "" ?
-                    <Text>Está tarefa foi finalizada em {task.finished_at.slice(0, 10)}</Text>
+                    <Text style={styles.text}>Está tarefa foi finalizada em {dateFormat(task.finished_at.slice(0, 10))}</Text>
                     :
-                    <Text>Está tarefa ainda não foi finalizada</Text>
+                    <Text style={styles.text}>Está tarefa ainda não foi finalizada</Text>
                 }
             </View>
             <View style={styles.btns}>
                 <CheckBox
-                    title={isChecked? 'Concluida': "Em Andamento"}
+                    title={isChecked ? 'Concluida' : "Em Andamento"}
                     checked={isChecked}
                     onPress={() => ToggleTaskStatus(task._id)}
                 />
@@ -109,7 +117,12 @@ export default function ViewTask({ route }) {
                     style={styles.btnDelete}
                     onPress={() => handleDeleteTask(task._id)}
                 >
-                    <Text style={styles.textWhite}>Deletar Tarefa</Text>
+                    <Icon
+                        name='trash-2'
+                        color={"#fff"}
+                        size={20}
+                    />
+                    
                 </TouchableOpacity>
             </View>
 
@@ -118,10 +131,10 @@ export default function ViewTask({ route }) {
 }
 
 export const styles = StyleSheet.create({
-    container:{
+    container: {
         padding: 20,
     },
-    main:{
+    main: {
         display: "flex",
         width: "100%",
         height: 100,
@@ -132,18 +145,24 @@ export const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 30,
     },
+    text: {
+        color: "#000"
+    },
     textWhite: {
         color: "#fff"
     },
     btns: {
         display: 'flex',
-        flexDirection: "row",
+        justifyContent: "center",
     },
     btnDelete: {
+        display: "flex",
+        alignItems: "center",
         backgroundColor: "#e60000",
         justifyContent: "center",
         borderRadius: 10,
         padding: 10,
+        width: "10%",
     },
 
 });
