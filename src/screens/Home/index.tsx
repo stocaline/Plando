@@ -5,6 +5,7 @@ import { getRealm } from "../../database/realm";
 import { TaskCard } from "../../components/TaskCard";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from "react-native-vector-icons/Feather";
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 type TaskProps = {
     _id: string,
@@ -16,20 +17,124 @@ type TaskProps = {
     finished_at: string,
 }
 
+
+
+
 export default function Home() {
 
     const navigation = useNavigation();
 
     const [data, setData] = useState<TaskProps[]>();
+    const [dataHistoric, setDataHistoric] = useState<TaskProps[]>();
     const [totalTasksNumber, setTotalTasksNumber] = useState(0);
+
+    const [index, setIndex] = useState(0);
+    const [routes] = useState([
+        { key: 'first', title: 'Tarefas' },
+        { key: 'second', title: 'Historico' },
+    ]);
+
+    const FirstRoute = () => (
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>Plando</Text>
+            <Text style={styles.totalTasks}>Total de tarefas: {totalTasksNumber}</Text>
+            {data ?
+                <FlatList
+                    data={data}
+                    keyExtractor={item => item._id}
+                    style={styles.list}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) =>
+                        <TaskCard
+                            data={item}
+                            disable={false}
+                        />
+                    }
+                />
+                :
+                <Text style={{ color: "#000" }}>Sem Tarefas registradas</Text>
+            }
+            <View style={styles.bottomBar}>
+                <View style={styles.bottomButtons}></View>
+                <TouchableOpacity
+                    style={styles.btnAddTask}
+                    //@ts-ignore
+                    onPress={() => navigation.navigate("NewTask")}
+                >
+                    <Icon
+                        name='plus'
+                        color={"#fff"}
+                        size={20}
+                    />
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
+    );
+
+    const SecondRoute = () => (
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>Plando</Text>
+            <Text style={styles.totalTasks}>Tarefas Finalizadas</Text>
+            {dataHistoric ?
+                <FlatList
+                    data={dataHistoric}
+                    keyExtractor={item => item._id}
+                    style={styles.list}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) =>
+                        <TaskCard
+                            data={item}
+                            disable={true}
+                        />
+                    }
+                />
+                :
+                <Text style={{ color: "#000" }}>Sem Tarefas registradas</Text>
+            }
+            <View style={styles.bottomBar}>
+                <View style={styles.bottomButtons}></View>
+                <TouchableOpacity
+                    style={styles.btnAddTask}
+                    //@ts-ignore
+                    onPress={() => navigation.navigate("NewTask")}
+                >
+                    <Icon
+                        name='plus'
+                        color={"#fff"}
+                        size={20}
+                    />
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
+    );
+
+    //@ts-ignore
+    const renderTabBar = (props) => (
+        <TabBar
+            {...props}
+            indicatorStyle={{ backgroundColor: 'blue' }}
+            style={{ backgroundColor: 'white' }}
+            labelStyle={{ color: 'blue' }}
+        />
+    );
+
+    const renderScene = SceneMap({
+        first: FirstRoute,
+        second: SecondRoute,
+    });
+
+
 
     async function handleFetchData() {
         const realm = await getRealm()
 
         try {
             const response = realm.objects("Task").filtered('historic == false');
+            const responseHistoric = realm.objects("Task").filtered('historic == true');
             //@ts-ignore
             orderTasks(response)
+            //@ts-ignore
+            setDataHistoric(responseHistoric)
 
         } catch (e) {
             console.log(e)
@@ -110,41 +215,15 @@ export default function Home() {
         checkLastVerificationTime()
     }, []))
 
+
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Plando</Text>
-            <Text style={styles.totalTasks}>Total de tarefas: {totalTasksNumber}</Text>
-            {data ?
-                <FlatList
-                    data={data}
-                    keyExtractor={item => item._id}
-                    style={styles.list}
-                    contentContainerStyle={styles.listContent}
-                    renderItem={({ item }) =>
-                        <TaskCard
-                            data={item}
-                        />
-                    }
-                />
-                :
-                <Text style={{ color: "#000" }}>Sem Tarefas registradas</Text>
-            }
-            <View style={styles.bottomBar}>
-                <View style={styles.bottomButtons}></View>
-                <TouchableOpacity
-                    style={styles.btnAddTask}
-                    //@ts-ignore
-                    onPress={() => navigation.navigate("NewTask")}
-                >
-                    <Icon
-                        name='plus'
-                        color={"#fff"}
-                        size={20}
-                    />
-                </TouchableOpacity>
-            </View>
-        </SafeAreaView>
-    )
+        <TabView
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            renderTabBar={renderTabBar}
+        />
+    );
 }
 
 const styles = StyleSheet.create({
