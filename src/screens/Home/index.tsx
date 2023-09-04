@@ -35,17 +35,24 @@ export default function Home() {
         } finally {
             realm.close
         }
-        
+
     }
 
     async function doVerification() {
         const realm = await getRealm()
-        const tasksToUpdate = realm.objects('Task').filtered('finished_at != "" AND historic == false');
-        realm.write(() => {
-            tasksToUpdate.forEach((task) => {
-                task.historico = true;
+        try {
+            const tasksToUpdate = realm.objects('Task').filtered('finished_at != "" AND historic == false');
+            realm.write(() => {
+                tasksToUpdate.forEach((task) => {
+                    task.historic = true;
+                });
             });
-        });
+
+        } catch (e) {
+            console.log(e)
+        } finally {
+            realm.close
+        }
     }
 
     async function checkLastVerificationTime() {
@@ -71,7 +78,7 @@ export default function Home() {
         }
     }
 
-    function orderTasks(tasks:TaskProps[]) {
+    function orderTasks(tasks: TaskProps[]) {
         if (tasks) {
             var taskPriority1: TaskProps[] = []
             var taskPriority2: TaskProps[] = []
