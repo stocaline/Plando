@@ -21,6 +21,7 @@ export default function Home() {
     const navigation = useNavigation();
 
     const [data, setData] = useState<TaskProps[]>();
+    const [totalTasksNumber, setTotalTasksNumber] = useState(0);
 
     async function handleFetchData() {
         const realm = await getRealm()
@@ -97,6 +98,7 @@ export default function Home() {
                     taskFinished.unshift(task)
                 }
             })
+            setTotalTasksNumber(taskPriority1.length + taskPriority2.length + taskPriority3.length)
             var orderedTasks = taskPriority1.concat(taskPriority2, taskPriority3, taskFinished);
             setData(orderedTasks)
 
@@ -111,6 +113,7 @@ export default function Home() {
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Plando</Text>
+            <Text style={styles.totalTasks}>Total de tarefas: {totalTasksNumber}</Text>
             {data ?
                 <FlatList
                     data={data}
@@ -162,7 +165,9 @@ const styles = StyleSheet.create({
         textShadowRadius: 2,
         marginBottom: 10,
     },
-
+    totalTasks: {
+        margin: 10,
+    },
     list: {
         flex: 1,
         width: '100%',
