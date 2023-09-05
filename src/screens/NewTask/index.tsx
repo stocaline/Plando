@@ -9,7 +9,7 @@ export default function NewTask() {
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState('normal');
     const [selectedColor, setSelectedColor] = useState('green');
-    const colorsPallet = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
+    const colorsPallet = ['crimson', 'chartreuse', '#cornflowerblue', '#303030', 'darkorchild', 'orange'];
 
     function cleanFormInputs() {
         setTitle("")
@@ -53,16 +53,19 @@ export default function NewTask() {
                 value={title}
                 onChangeText={setTitle}
                 placeholder="Título da tarefa"
-                placeholderTextColor="#303030" 
+                placeholderTextColor="#303030"
+                maxLength={20}
             />
 
             <Text style={styles.label}>Descrição:</Text>
             <TextInput
                 style={styles.input}
+                multiline={true}
+                numberOfLines={4}
                 value={description}
                 onChangeText={setDescription}
                 placeholder="Descrição da tarefa"
-                placeholderTextColor="#303030" 
+                placeholderTextColor="#303030"
             />
 
             <Text style={styles.label}>Prioridade:</Text>
@@ -114,6 +117,7 @@ export const styles = StyleSheet.create({
         padding: 10,
         fontSize: 16,
         marginBottom: 10,
+        color: "#000",
     },
     picker: {
         borderWidth: 1,

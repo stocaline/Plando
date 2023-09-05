@@ -16,10 +16,11 @@ type TaskProps = {
 
 type Props = {
     data: TaskProps;
+    disable: boolean;
 }
 
 
-export function TaskCard({ data }: Props) {
+export function TaskCard({ data, disable }: Props) {
 
     const navigation = useNavigation();
     const [isChecked, setIsChecked] = useState(false);
@@ -72,6 +73,7 @@ export function TaskCard({ data }: Props) {
                 <CheckBox
                     checked={data.finished_at == "" ? false : true}
                     onPress={() => ToggleTaskStatus(data._id)}
+                    disabled={disable}
                 />
             </View>
         </View>
