@@ -17,9 +17,6 @@ type TaskProps = {
     finished_at: string,
 }
 
-
-
-
 export default function Home() {
 
     const navigation = useNavigation();
@@ -74,7 +71,7 @@ export default function Home() {
     const SecondRoute = () => (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Plando</Text>
-            <Text style={styles.totalTasks}>Tarefas Finalizadas</Text>
+            <Text style={styles.totalTasks}>Tarefas Finalizadas: {dataHistoric?.length}</Text>
             {dataHistoric ?
                 <FlatList
                     data={dataHistoric}
@@ -89,22 +86,8 @@ export default function Home() {
                     }
                 />
                 :
-                <Text style={{ color: "#000" }}>Sem Tarefas registradas</Text>
+                <Text style={{ color: "#000" }}>Sem Taredas Finalizadas</Text>
             }
-            <View style={styles.bottomBar}>
-                <View style={styles.bottomButtons}></View>
-                <TouchableOpacity
-                    style={styles.btnAddTask}
-                    //@ts-ignore
-                    onPress={() => navigation.navigate("NewTask")}
-                >
-                    <Icon
-                        name='plus'
-                        color={"#fff"}
-                        size={20}
-                    />
-                </TouchableOpacity>
-            </View>
         </SafeAreaView>
     );
 
@@ -211,8 +194,8 @@ export default function Home() {
     }
 
     useFocusEffect(useCallback(() => {
-        handleFetchData()
         checkLastVerificationTime()
+        handleFetchData()
     }, []))
 
 
@@ -246,6 +229,7 @@ const styles = StyleSheet.create({
     },
     totalTasks: {
         margin: 10,
+        color: "#303030"
     },
     list: {
         flex: 1,
@@ -264,7 +248,6 @@ const styles = StyleSheet.create({
     bottomButtons: {
         height: 50,
         width: "100%",
-        backgroundColor: "#fff"
     },
     btnAddTask: {
         position: "absolute",
