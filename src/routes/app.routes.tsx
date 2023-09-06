@@ -11,9 +11,9 @@ function AppRoutes() {
     return (
             <Stack.Navigator>
                 <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-                <Stack.Screen name="Tasks" component={Tasks} options={{ headerShown: true }} />
-                <Stack.Screen name="NewTask" component={NewTask} options={{ headerShown: true }} />
-                <Stack.Screen name="ViewTask" component={ViewTask} options={{ headerShown: true }} />
+                <Stack.Screen name="Tasks" component={Tasks} options={{ headerShown: false }} />
+                <Stack.Screen name="NewTask" component={NewTask} options={{ headerShown: false }} />
+                <Stack.Screen name="ViewTask" component={ViewTask} options={{ headerShown: false }} />
             </Stack.Navigator>
     )
 }

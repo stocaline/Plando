@@ -29,7 +29,7 @@ export default function Home() {
                         <Text style={styles.btnText}>Tarefas</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.btn}
+                        style={styles.btnDisable}
                         onPress={() => console.log('clicou')}
                     >
                         <Icon
@@ -42,7 +42,7 @@ export default function Home() {
                 </View>
                 <View style={styles.row}>
                     <TouchableOpacity
-                        style={styles.btn}
+                        style={styles.btnDisable}
                         onPress={() => console.log('clicou')}
                     >
                         <Icon
@@ -53,7 +53,7 @@ export default function Home() {
                         <Text style={styles.btnText}>Anotações</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.btn}
+                        style={styles.btnDisable}
                         onPress={() => console.log('clicou')}
                     >
                         <Icon
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         gap: 100,
     },
     title: {
-        fontSize: 36,
+        fontSize: 48,
         textAlign: "center",
         fontWeight: 'bold',
         color: '#fff',
@@ -108,6 +108,16 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#fff",
+        borderRadius: 10,
+    },
+    btnDisable: {
+        display: "flex",
+        width: "100%",
+        height: "100%",
+        padding: 5,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(255, 255, 255, .7)",
         borderRadius: 10,
     },
     btnText:{ 

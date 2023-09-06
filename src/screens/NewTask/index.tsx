@@ -3,13 +3,14 @@ import React, { useState } from "react";
 import { SafeAreaView, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
 import { getRealm } from "../../database/realm";
 import uuid from "react-native-uuid"
+import { Header } from "../../components/Header";
 
 export default function NewTask() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState('normal');
     const [selectedColor, setSelectedColor] = useState('green');
-    const colorsPallet = ['crimson', 'chartreuse', '#cornflowerblue', '#303030', 'darkorchild', 'orange'];
+    const colorsPallet = ['crimson', 'chartreuse', '#6495ED', '#303030', '#9932cc', 'orange'];
 
     function cleanFormInputs() {
         setTitle("")
@@ -46,57 +47,60 @@ export default function NewTask() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.label}>Título:</Text>
-            <TextInput
-                style={styles.input}
-                value={title}
-                onChangeText={setTitle}
-                placeholder="Título da tarefa"
-                placeholderTextColor="#303030"
-                maxLength={20}
-            />
+        <SafeAreaView >
+            <Header title="Adicionar Tarefa" color={"#0645ad"} />
+            <View style={styles.container}>
+                <Text style={styles.label}>Título:</Text>
+                <TextInput
+                    style={styles.input}
+                    value={title}
+                    onChangeText={setTitle}
+                    placeholder="Título da tarefa"
+                    placeholderTextColor="#303030"
+                    maxLength={20}
+                />
 
-            <Text style={styles.label}>Descrição:</Text>
-            <TextInput
-                style={styles.input}
-                multiline={true}
-                numberOfLines={4}
-                value={description}
-                onChangeText={setDescription}
-                placeholder="Descrição da tarefa"
-                placeholderTextColor="#303030"
-            />
+                <Text style={styles.label}>Descrição:</Text>
+                <TextInput
+                    style={styles.input}
+                    multiline={true}
+                    numberOfLines={4}
+                    value={description}
+                    onChangeText={setDescription}
+                    placeholder="Descrição da tarefa"
+                    placeholderTextColor="#303030"
+                />
 
-            <Text style={styles.label}>Prioridade:</Text>
-            <Picker
-                selectedValue={priority}
-                onValueChange={setPriority}
-                style={styles.picker}
-            >
-                <Picker.Item label="Opcional" value="Opcional" />
-                <Picker.Item label="Normal" value="Normal" />
-                <Picker.Item label="Urgente" value="Urgente" />
-            </Picker>
+                <Text style={styles.label}>Prioridade:</Text>
+                <Picker
+                    selectedValue={priority}
+                    onValueChange={setPriority}
+                    style={styles.picker}
+                >
+                    <Picker.Item label="Opcional" value="Opcional" />
+                    <Picker.Item label="Normal" value="Normal" />
+                    <Picker.Item label="Urgente" value="Urgente" />
+                </Picker>
 
-            <Text style={styles.label}>Selecione uma cor para tarefa:</Text>
-            <View style={styles.colorContainer}>
-                {colorsPallet.map((color, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[
-                            styles.colorCircle,
-                            { backgroundColor: color },
-                            selectedColor === color ? styles.selectedColorCircle : null,
-                        ]}
-                        onPress={() => setSelectedColor(color)}
-                    />
-                ))}
+                <Text style={styles.label}>Selecione uma cor para tarefa:</Text>
+                <View style={styles.colorContainer}>
+                    {colorsPallet.map((color, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            style={[
+                                styles.colorCircle,
+                                { backgroundColor: color },
+                                selectedColor === color ? styles.selectedColorCircle : null,
+                            ]}
+                            onPress={() => setSelectedColor(color)}
+                        />
+                    ))}
+                </View>
+
+                <TouchableOpacity onPress={handleSubmit} style={styles.addButton}>
+                    <Text style={styles.buttonText}>Adicionar Tarefa</Text>
+                </TouchableOpacity>
             </View>
-
-            <TouchableOpacity onPress={handleSubmit} style={styles.addButton}>
-                <Text style={styles.buttonText}>Adicionar Tarefa</Text>
-            </TouchableOpacity>
         </SafeAreaView >
     )
 }

@@ -4,6 +4,7 @@ import { CheckBox } from "react-native-elements";
 import { getRealm } from "../../database/realm";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Feather";
+import { Header } from "../../components/Header";
 
 type TaskProps = {
     _id: string;
@@ -108,6 +109,7 @@ export default function ViewTask({ route }) {
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: task.color }]}>
+            <Header title="Tarefas" color={task.color}/>
             <View style={[styles.main, { backgroundColor: task.color }]}>
 
                 <TextInput
