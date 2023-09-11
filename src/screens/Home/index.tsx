@@ -24,7 +24,7 @@ export default function Home() {
                         <Icon
                             name='clipboard'
                             color={"#0645ad"}
-                            size={20}
+                            size={50}
                         />
                         <Text style={styles.btnText}>Tarefas</Text>
                     </TouchableOpacity>
@@ -35,7 +35,7 @@ export default function Home() {
                         <Icon
                             name='shopping-bag'
                             color={"#0645ad"}
-                            size={20}
+                            size={50}
                         />
                         <Text style={styles.btnText}>Lista de compras</Text>
                     </TouchableOpacity>
@@ -48,7 +48,7 @@ export default function Home() {
                         <Icon
                             name='bookmark'
                             color={"#0645ad"}
-                            size={20}
+                            size={50}
                         />
                         <Text style={styles.btnText}>Anotações</Text>
                     </TouchableOpacity>
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
         padding: 5,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "rgba(255, 255, 255, .7)",
+        backgroundColor: "rgba(255, 255, 255, .8)",
         borderRadius: 10,
     },
     btnText:{ 

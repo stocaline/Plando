@@ -93,9 +93,9 @@ export default function TabViewTask() {
     const renderTabBar = (props) => (
         <TabBar
             {...props}
-            indicatorStyle={{ backgroundColor: 'blue' }}
+            indicatorStyle={{ backgroundColor: '#6495ED' }}
             style={{ backgroundColor: 'white' }}
-            labelStyle={{ color: 'blue' }}
+            labelStyle={{ color: '#6495ED' }}
         />
     );
 

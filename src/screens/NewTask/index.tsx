@@ -48,7 +48,7 @@ export default function NewTask() {
 
     return (
         <SafeAreaView >
-            <Header title="Adicionar Tarefa" color={"#0645ad"} />
+            <Header title="Nova Tarefa" color={"#0645ad"} />
             <View style={styles.container}>
                 <Text style={styles.label}>Título:</Text>
                 <TextInput
