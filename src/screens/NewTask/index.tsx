@@ -34,6 +34,7 @@ export default function NewTask() {
                     finished_at: "",
                     historic: false,
                     deadline: "",
+                    super: false,
                     created_at: new Date().toISOString().slice(0, 10),
                 })
             })
@@ -48,7 +49,7 @@ export default function NewTask() {
 
     return (
         <SafeAreaView >
-            <Header title="Nova Tarefa" color={"#0645ad"} />
+            <Header title="Nova Tarefa" color={"#0645ad"} taskId=""/>
             <View style={styles.container}>
                 <Text style={styles.label}>Título:</Text>
                 <TextInput

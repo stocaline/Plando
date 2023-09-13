@@ -5,6 +5,7 @@ import { getRealm } from "../../database/realm";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Feather";
 import { Header } from "../../components/Header";
+import { updateDesciptionTitle, updateTaskTitle } from "../../utils/task/TaskFunctions";
 
 type TaskProps = {
     _id: string;
@@ -43,47 +44,6 @@ export default function ViewTask({ route }) {
         }
     }
 
-    async function handleDeleteTask(idTask: string) {
-        const realm = await getRealm()
-
-        try {
-            realm.write(() => {
-                const objectToDelete = realm.objectForPrimaryKey("Task", idTask);
-                realm.delete(objectToDelete);
-            });
-            navigation.goBack()
-        } catch (e) {
-            console.log(e)
-        } finally {
-            realm.close
-        }
-    }
-
-    async function updateTaskTitle(taskid: string, newTitle: string) {
-        const realm = await getRealm();
-
-        try {
-            realm.write(() => {
-                const task = realm.objectForPrimaryKey<TaskProps>("Task", taskid);
-                task!.title = newTitle;
-            });
-        } catch (error) {
-            console.log("Erro ao atualizar o título da tarefa:", error);
-        }
-    }
-
-    async function updateDesciptionTitle(taskid: string, newDescription: string) {
-        const realm = await getRealm();
-
-        try {
-            realm.write(() => {
-                const task = realm.objectForPrimaryKey<TaskProps>("Task", taskid);
-                task!.description = newDescription;
-            });
-        } catch (error) {
-            console.log("Erro ao atualizar o descrição da tarefa:", error);
-        }
-    }
 
     function handleInputTitleChange(text: string) {
         setTitle(text);
@@ -109,7 +69,7 @@ export default function ViewTask({ route }) {
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: task.color }]}>
-            <Header title="Tarefas" color={task.color}/>
+            <Header title="Tarefas" color={task.color} taskId={task._id}/>
             <View style={[styles.main, { backgroundColor: task.color }]}>
 
                 <TextInput
@@ -117,7 +77,7 @@ export default function ViewTask({ route }) {
                     value={title}
                     onChangeText={handleInputTitleChange}
                     onSubmitEditing={() => updateTaskTitle(task._id, title)}
-                    maxLength={20}
+                    maxLength={30}
                 />
             </View>
             <View style={styles.container}>
@@ -146,17 +106,6 @@ export default function ViewTask({ route }) {
                         checked={isChecked}
                         onPress={() => ToggleTaskStatus(task._id)}
                     />
-                    <TouchableOpacity
-                        style={styles.btnDelete}
-                        onPress={() => handleDeleteTask(task._id)}
-                    >
-                        <Icon
-                            name='trash-2'
-                            color={"#fff"}
-                            size={20}
-                        />
-
-                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>
@@ -184,7 +133,8 @@ export const styles = StyleSheet.create({
     },
     title: {
         color: "#fff",
-        fontSize: 30,
+        fontSize: 25,
+        alignSelf:"center",
     },
     text: {
         color: "#000"
