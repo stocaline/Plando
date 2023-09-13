@@ -22,86 +22,11 @@ export default function TabViewTask() {
         { key: 'second', title: 'Histórico' },
     ]);
 
-    const FirstRoute = () => (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.totalTasks}>Total de tarefas: {totalTasksNumber}</Text>
-            {data ?
-                <FlatList
-                    data={data}
-                    keyExtractor={item => item._id}
-                    style={styles.list}
-                    contentContainerStyle={styles.listContent}
-                    renderItem={({ item }) =>
-                        <TaskCard
-                            data={item}
-                            disable={false}
-                        />
-                    }
-                />
-                :
-                <Text style={{ color: "#000" }}>Sem Tarefas registradas</Text>
-            }
-            <View style={styles.bottomBar}>
-                <View style={styles.bottomButtons}></View>
-                <TouchableOpacity
-                    style={styles.btnAddTask}
-                    //@ts-ignore
-                    onPress={() => navigation.navigate("NewTask")}
-                >
-                    <Icon
-                        name='plus'
-                        color={"#fff"}
-                        size={20}
-                    />
-                </TouchableOpacity>
-            </View>
-        </SafeAreaView>
-    );
-
-    const SecondRoute = () => (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.totalTasks}>Tarefas Finalizadas: {dataHistoric?.length}</Text>
-            {dataHistoric ?
-                <FlatList
-                    data={dataHistoric}
-                    keyExtractor={item => item._id}
-                    style={styles.list}
-                    contentContainerStyle={styles.listContent}
-                    renderItem={({ item }) =>
-                        <TaskCard
-                            data={item}
-                            disable={true}
-                        />
-                    }
-                />
-                :
-                <Text style={{ color: "#000" }}>Sem Tarefas Finalizadas</Text>
-            }
-        </SafeAreaView>
-    );
-
-    //@ts-ignore
-    const renderTabBar = (props) => (
-        <TabBar
-            {...props}
-            indicatorStyle={{ backgroundColor: '#6495ED' }}
-            style={{ backgroundColor: 'white' }}
-            labelStyle={{ color: '#6495ED' }}
-        />
-    );
-
-    const renderScene = SceneMap({
-        first: FirstRoute,
-        second: SecondRoute,
-    });
-
-
-
     async function handleFetchData() {
         const realm = await getRealm()
 
         try {
-            const response = realm.objects("Task").filtered('historic == false');
+            const response = realm.objects("Task").filtered('historic == false AND title != "DELETED"');
             const responseHistoric = realm.objects("Task").filtered('historic == true');
             //@ts-ignore
             orderTasks(response)
@@ -181,10 +106,87 @@ export default function TabViewTask() {
 
         }
     }
+    async function deleteCache() {
+        const realm = await getRealm()
+        try {
+            realm.write(() => {
+                var tasksToUpdate = realm.objects('Task').filtered('title == "DELETED"');
+                tasksToUpdate.forEach((task) => {
+                    realm.delete(task);
+                });
+            });
+
+        } catch (e) {
+            console.log(e)
+        } finally {
+            realm.close
+        }
+    }
+
+    const FirstRoute = () => (
+        <SafeAreaView style={styles.container}>
+            {totalTasksNumber != 0 ? <Text style={styles.totalTasks}>Total de tarefas: {totalTasksNumber}</Text> : <Text style={{ color: "#000", margin: 10 }}>Sem Tarefas registradas</Text>}
+            {data?.length != 0 ?
+                <FlatList
+                    data={data}
+                    keyExtractor={item => item._id}
+                    style={styles.list}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) =>
+                        <TaskCard
+                            data={item}
+                            disable={false}
+                        />
+                    }
+                />
+                :
+                <View></View>
+            }
+        </SafeAreaView>
+    );
+
+    const SecondRoute = () => (
+        <SafeAreaView style={styles.container}>
+            {dataHistoric?.length != 0 ? <Text style={styles.totalTasks}>Tarefas Finalizadas: {dataHistoric?.length}</Text> : <Text style={{ color: "#000", margin: 10 }}>Sem Tarefas Finalizadas</Text>}
+            {dataHistoric?.length != 0 ?
+                <FlatList
+                    data={dataHistoric}
+                    keyExtractor={item => item._id}
+                    style={styles.list}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) =>
+                        <TaskCard
+                            data={item}
+                            disable={true}
+                        />
+                    }
+                />
+                :
+                <View></View>
+            }
+        </SafeAreaView>
+    );
+
+    //@ts-ignore
+    const renderTabBar = (props) => (
+        <TabBar
+            {...props}
+            indicatorStyle={{ backgroundColor: '#6495ED' }}
+            style={{ backgroundColor: 'white' }}
+            labelStyle={{ color: '#6495ED' }}
+        />
+    );
+
+    const renderScene = SceneMap({
+        first: FirstRoute,
+        second: SecondRoute,
+    });
+
 
     useFocusEffect(useCallback(() => {
         checkLastVerificationTime()
         handleFetchData()
+        deleteCache()
     }, []))
 
 

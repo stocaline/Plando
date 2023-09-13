@@ -4,6 +4,7 @@ export type TaskProps = {
     description: string,
     color: string,
     priority: string,
+    super: Boolean,
     finished_at: string,
     created_at: Date,
 }

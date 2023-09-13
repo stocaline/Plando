@@ -52,20 +52,36 @@ export function TaskCard({ data, disable }: Props) {
 
     return (
         <View style={data.finished_at == "" ? styles.container : styles.containerStatusDone}>
-            <View style={[styles.tag, {backgroundColor: data.color}]}></View>
-            <View style={styles.content}>
-                <TouchableOpacity
-                    style={styles.cardName}
-                    onPress={() => handleOpenTask()}
-                >
-                    <Text style={{color: "#303030", fontWeight: "600"}}>{data.title}</Text>
-                </TouchableOpacity>
-                <CheckBox
-                    checked={data.finished_at == "" ? false : true}
-                    onPress={() => ToggleTaskStatus(data._id)}
-                    disabled={disable}
-                />
-            </View>
+            <View style={[styles.tag, { backgroundColor: data.color }]}></View>
+            {data.super ?
+                <View style={styles.content}>
+                    <TouchableOpacity
+                        style={styles.cardName}
+                        onPress={() => handleOpenTask()}
+                    >
+                        <Text style={{ color: "#303030", fontWeight: "600" }}>{data.title}</Text>
+                    </TouchableOpacity>
+                    <CheckBox
+                        checked={data.finished_at == "" ? false : true}
+                        onPress={() => ToggleTaskStatus(data._id)}
+                        disabled={disable}
+                    />
+                </View>
+                :
+                <View style={styles.content}>
+                    <TouchableOpacity
+                        style={styles.cardName}
+                        onPress={() => handleOpenTask()}
+                    >
+                        <Text style={{ color: "#303030", fontWeight: "600" }}>{data.title}</Text>
+                    </TouchableOpacity>
+                    <CheckBox
+                        checked={data.finished_at == "" ? false : true}
+                        onPress={() => ToggleTaskStatus(data._id)}
+                        disabled={disable}
+                    />
+                </View>
+            }
         </View>
     );
 }

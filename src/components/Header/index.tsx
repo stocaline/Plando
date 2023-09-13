@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { deleteTask } from '../../utils/task/TaskFunctions';
+import { getRealm } from "../../database/realm";
 
 type Props = {
     title: string;
@@ -23,13 +23,27 @@ export function Header({ title, color, taskId }: Props) {
         {
             title: "Excluir",
             color: "red",
-            action: () => handleDeleteTask(taskId)
-        }
+            action: () => handlePrepareTaskForDelete()
+        },
+        // {
+        //     title: "Add Sub-Tarefa",
+        //     color: "#0645ad",
+        //     action: () => handleDeleteTask(task._id)
+        // }
     ]
 
-    function handleDeleteTask(id: string){
-        deleteTask(id)
-        navigation.goBack()
+    async function handlePrepareTaskForDelete() {
+        const realm = await getRealm()
+
+        try {
+            realm.write(() => {
+                const objectToDelete = realm.objectForPrimaryKey("Task", taskId);
+                objectToDelete!.title = "DELETED";
+            });
+            navigation.goBack()
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     function resizeBox(to: number) {
@@ -40,6 +54,39 @@ export function Header({ title, color, taskId }: Props) {
             duration: 200,
             easing: Easing.linear
         }).start(() => to === 0 && setVisible(false))
+    }
+
+    function buttonHeader() {
+        if (title == "Tarefas") {
+            return (
+                <TouchableOpacity
+                    style={styles.button}
+                    //@ts-ignore
+                    onPress={() => navigation.navigate("NewTask")}
+                >
+                    <Icon
+                        name='plus'
+                        color={"#fff"}
+                        size={20}
+                    />
+                </TouchableOpacity>
+            )
+        } else if (title == "Tarefa") {
+            return (
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => resizeBox(1)}
+                >
+                    <Icon
+                        name='more-vertical'
+                        color={"#fff"}
+                        size={20}
+                    />
+                </TouchableOpacity>
+            )
+        } else {
+            return <View></View>
+        }
     }
 
     return (
@@ -66,23 +113,8 @@ export function Header({ title, color, taskId }: Props) {
                 <Text style={styles.title}>
                     {title}
                 </Text>
-
             </View>
-            {taskId ?
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => resizeBox(1)}
-                >
-                    <Icon
-                        name='more-vertical'
-                        color={"#fff"}
-                        size={20}
-                    />
-                </TouchableOpacity>
-                
-                :
-            <View></View>
-            }
+            {buttonHeader()}
             <Modal transparent visible={visible}>
                 <SafeAreaView
                     style={{ flex: 1 }}

@@ -8,7 +8,7 @@ import { Header } from "../../components/Header";
 export default function NewTask() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [priority, setPriority] = useState('normal');
+    const [priority, setPriority] = useState('Normal');
     const [selectedColor, setSelectedColor] = useState('green');
     const colorsPallet = ['crimson', 'chartreuse', '#6495ED', '#303030', '#9932cc', 'orange'];
 
@@ -49,7 +49,7 @@ export default function NewTask() {
 
     return (
         <SafeAreaView >
-            <Header title="Nova Tarefa" color={"#0645ad"} taskId=""/>
+            <Header title="Nova Tarefa" color={"#0645ad"}/>
             <View style={styles.container}>
                 <Text style={styles.label}>Título:</Text>
                 <TextInput
@@ -78,8 +78,8 @@ export default function NewTask() {
                     onValueChange={setPriority}
                     style={styles.picker}
                 >
-                    <Picker.Item label="Opcional" value="Opcional" />
                     <Picker.Item label="Normal" value="Normal" />
+                    <Picker.Item label="Opcional" value="Opcional" />
                     <Picker.Item label="Urgente" value="Urgente" />
                 </Picker>
 

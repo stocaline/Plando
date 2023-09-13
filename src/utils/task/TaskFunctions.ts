@@ -11,6 +11,8 @@ export async function updateTaskTitle(taskid: string, newTitle: string) {
         });
     } catch (error) {
         console.log("Erro ao atualizar o título da tarefa:", error);
+    } finally {
+        realm.close
     }
 }
 
@@ -24,6 +26,8 @@ export async function updateDesciptionTitle(taskid: string, newDescription: stri
         });
     } catch (error) {
         console.log("Erro ao atualizar o descrição da tarefa:", error);
+    } finally {
+        realm.close
     }
 }
 

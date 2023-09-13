@@ -1,5 +1,5 @@
-import { useCallback, useState } from "react";
-import { SafeAreaView, Text, TouchableOpacity, View, StyleSheet, TextInput } from "react-native";
+import { useCallback, useState, useRef, useEffect } from "react";
+import { SafeAreaView, Text, TouchableOpacity, View, StyleSheet, TextInput, Animated, Easing, Modal } from "react-native";
 import { CheckBox } from "react-native-elements";
 import { getRealm } from "../../database/realm";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -16,6 +16,8 @@ export default function ViewTask({ route }) {
     const [title, setTitle] = useState(task.title);
     const [description, setDescription] = useState(task.description);
     const [taskFinishDate, setTaskFinishDate] = useState(task.finished_at);
+
+
 
     async function ToggleTaskStatus(idTask: string): Promise<void> {
         const realm = await getRealm();
@@ -37,7 +39,9 @@ export default function ViewTask({ route }) {
 
 
     function handleInputTitleChange(text: string) {
-        setTitle(text);
+        if (text != "") {
+            setTitle(text);
+        }
     }
 
     function handleInputDescriptionChange(text: string) {
@@ -52,6 +56,14 @@ export default function ViewTask({ route }) {
         return dateFormated
     }
 
+    function verifyDisable() {
+        if (task.historic) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     useFocusEffect(useCallback(() => {
         if (task.finished_at != "") {
             setIsChecked(true)
@@ -60,7 +72,7 @@ export default function ViewTask({ route }) {
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: task.color }]}>
-            <Header title="Tarefas" color={task.color} taskId={task._id}/>
+            <Header title="Tarefa" color={task.color} taskId={task._id}/>
             <View style={[styles.main, { backgroundColor: task.color }]}>
 
                 <TextInput
@@ -70,7 +82,9 @@ export default function ViewTask({ route }) {
                     onSubmitEditing={() => updateTaskTitle(task._id, title)}
                     maxLength={30}
                 />
+
             </View>
+
             <View style={styles.container}>
                 <View>
                     <Text style={styles.text}>Descrição:</Text>
@@ -96,6 +110,7 @@ export default function ViewTask({ route }) {
                         title={isChecked ? 'Concluida' : "Em Andamento"}
                         checked={isChecked}
                         onPress={() => ToggleTaskStatus(task._id)}
+                        disabled={verifyDisable()}
                     />
                 </View>
             </View>
@@ -109,7 +124,7 @@ export const styles = StyleSheet.create({
         height: "100%"
     },
     container: {
-        padding: 20,
+        paddingHorizontal: 20,
         height: "90%",
         backgroundColor: '#fff',
         margin: 10,
@@ -125,13 +140,20 @@ export const styles = StyleSheet.create({
     title: {
         color: "#fff",
         fontSize: 25,
-        alignSelf:"center",
+        alignSelf: "center",
     },
     text: {
         color: "#000"
     },
     textWhite: {
         color: "#fff"
+    },
+    containerConfig: {
+        display: "flex",
+        flexDirection: "row",
+        width: "100%",
+        justifyContent: "space-between",
+        alignItems: "center"
     },
     btns: {
         display: 'flex',
@@ -145,6 +167,12 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 10,
         width: "100%",
+    },
+    button: {
+        height: 80,
+        width: 56,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 
 });
