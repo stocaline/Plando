@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import Icon from "react-native-vector-icons/Feather"
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -13,8 +13,14 @@ export function Header({ title, color }: Props) {
     const navigation = useNavigation();
 
     return (
-        <View style={[styles.container, {backgroundColor: color}]}>
-
+        <View style={[styles.container, { backgroundColor: color }]}>
+            <StatusBar
+                animated={true}
+                backgroundColor={color}
+                barStyle={"default"}
+                showHideTransition={"slide"}
+                hidden={false}
+            />
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => navigation.goBack()}
@@ -49,11 +55,9 @@ export const styles = StyleSheet.create({
     content: {
         flex: 1,
         justifyContent: "center",
-        padding: 15,
     },
     title: {
         fontSize: 20,
-        lineHeight: 18,
         color: '#fff',
         fontWeight: 'bold',
     },

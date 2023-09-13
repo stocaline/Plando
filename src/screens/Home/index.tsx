@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react"
-import { StyleSheet, SafeAreaView, Text, TouchableOpacity, FlatList, View } from "react-native"
+import { StyleSheet, SafeAreaView, Text, TouchableOpacity, FlatList, View, StatusBar } from "react-native"
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Feather";
 
@@ -14,6 +14,13 @@ export default function Home() {
 
     return (
         <SafeAreaView style={styles.container}>
+            <StatusBar
+                animated={true}
+                backgroundColor="#0645ad"
+                barStyle={"default"}
+                showHideTransition={"fade"}
+                hidden={false}
+            />
             <Text style={styles.title}>Plando</Text>
             <View style={styles.menu}>
                 <View style={styles.row}>
@@ -120,7 +127,7 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(255, 255, 255, .8)",
         borderRadius: 10,
     },
-    btnText:{ 
+    btnText: {
         color: "#0645ad",
         fontSize: 20,
         fontWeight: "bold",

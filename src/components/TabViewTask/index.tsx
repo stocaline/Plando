@@ -84,7 +84,7 @@ export default function TabViewTask() {
                     }
                 />
                 :
-                <Text style={{ color: "#000" }}>Sem Taredas Finalizadas</Text>
+                <Text style={{ color: "#000" }}>Sem Tarefas Finalizadas</Text>
             }
         </SafeAreaView>
     );
