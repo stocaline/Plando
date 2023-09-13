@@ -6,16 +6,7 @@ import { TaskCard } from "../../components/TaskCard";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from "react-native-vector-icons/Feather";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-
-type TaskProps = {
-    _id: string,
-    title: string,
-    description: string,
-    color: string,
-    priority: string,
-    created_at: Date,
-    finished_at: string,
-}
+import { TaskProps } from "../../@types/task";
 
 export default function TabViewTask() {
 

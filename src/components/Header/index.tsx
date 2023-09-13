@@ -3,7 +3,6 @@ import Icon from "react-native-vector-icons/Feather"
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useRef, useState } from 'react';
-import { getRealm } from '../../database/realm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { deleteTask } from '../../utils/task/TaskFunctions';
 

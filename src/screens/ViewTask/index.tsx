@@ -6,16 +6,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Feather";
 import { Header } from "../../components/Header";
 import { updateDesciptionTitle, updateTaskTitle } from "../../utils/task/TaskFunctions";
-
-type TaskProps = {
-    _id: string;
-    title: string;
-    description: string,
-    color: string,
-    priority: string,
-    finished_at: string,
-    created_at: Date,
-}
+import { TaskProps } from "../../@types/task";
 
 //@ts-ignore
 export default function ViewTask({ route }) {

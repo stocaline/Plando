@@ -1,14 +1,5 @@
+import { TaskProps } from "../../@types/task";
 import { getRealm } from "../../database/realm";
-
-type TaskProps = {
-    _id: string;
-    title: string;
-    description: string,
-    color: string,
-    priority: string,
-    finished_at: string,
-    created_at: Date,
-}
 
 export async function updateTaskTitle(taskid: string, newTitle: string) {
     const realm = await getRealm();

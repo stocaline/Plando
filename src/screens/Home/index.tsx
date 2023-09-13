@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from "react"
+import React from "react"
 import { StyleSheet, SafeAreaView, Text, TouchableOpacity, FlatList, View, StatusBar } from "react-native"
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Feather";
 
 export default function Home() {
@@ -21,7 +21,10 @@ export default function Home() {
                 showHideTransition={"fade"}
                 hidden={false}
             />
-            <Text style={styles.title}>Plando</Text>
+            <View style={styles.header}>
+                <Text style={styles.title}>Plando</Text>
+                <Text style={styles.text}>Olá, qual será sua próxima realização?</Text>
+            </View>
             <View style={styles.menu}>
                 <View style={styles.row}>
                     <TouchableOpacity
@@ -31,7 +34,7 @@ export default function Home() {
                         <Icon
                             name='clipboard'
                             color={"#0645ad"}
-                            size={50}
+                            size={40}
                         />
                         <Text style={styles.btnText}>Tarefas</Text>
                     </TouchableOpacity>
@@ -42,7 +45,7 @@ export default function Home() {
                         <Icon
                             name='shopping-bag'
                             color={"#0645ad"}
-                            size={50}
+                            size={40}
                         />
                         <Text style={styles.btnText}>Lista de compras</Text>
                     </TouchableOpacity>
@@ -55,7 +58,7 @@ export default function Home() {
                         <Icon
                             name='bookmark'
                             color={"#0645ad"}
-                            size={50}
+                            size={40}
                         />
                         <Text style={styles.btnText}>Anotações</Text>
                     </TouchableOpacity>
@@ -66,7 +69,7 @@ export default function Home() {
                         <Icon
                             name='calendar'
                             color={"#0645ad"}
-                            size={50}
+                            size={40}
                         />
                         <Text style={styles.btnText}>Calendario</Text>
                     </TouchableOpacity>
@@ -85,15 +88,24 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 100,
     },
+    header: {
+        width: "80%"
+    },
     title: {
-        fontSize: 48,
-        textAlign: "center",
+        fontSize: 30,
+        textAlign: "left",
         fontWeight: 'bold',
         color: '#fff',
         textShadowColor: 'rgba(0, 0, 0, 0.3)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
         marginTop: 20,
+    },
+    text: {
+        fontSize: 15,
+        textAlign: "left",
+        fontWeight: '500',
+        color: '#fff',
     },
     menu: {
         display: "flex",

@@ -3,22 +3,12 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { getRealm } from '../../database/realm';
 import { useCallback, useEffect, useState } from 'react';
 import { CheckBox } from 'react-native-elements';
-
-type TaskProps = {
-    _id: string;
-    title: string;
-    description: string,
-    color: string,
-    priority: string,
-    finished_at: string,
-    created_at: Date,
-}
+import { TaskProps } from '../../@types/task';
 
 type Props = {
     data: TaskProps;
     disable: boolean;
 }
-
 
 export function TaskCard({ data, disable }: Props) {
 
