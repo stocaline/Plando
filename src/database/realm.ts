@@ -1,8 +1,8 @@
 import Realm from "realm";
-import { TaskSchema } from "./schemas/TaskSchema"
+import { TaskSchema, TaskChildrenSchema } from "./schemas/TaskSchema"
 
 export const getRealm = async () => await Realm.open({
     path: "taskcrafter-app",
-    schema: [TaskSchema],
-    schemaVersion: 1,
+    schema: [TaskSchema, TaskChildrenSchema],
+    schemaVersion: 2,
 })
