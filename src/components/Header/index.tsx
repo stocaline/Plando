@@ -1,10 +1,13 @@
-import { Animated, Easing, StatusBar, Text, TouchableOpacity, View, Modal } from 'react-native';
+import { Animated, Easing, StatusBar, Text, TouchableOpacity, View, Modal, TextInput } from 'react-native';
 import Icon from "react-native-vector-icons/Feather"
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getRealm } from "../../database/realm";
+import { ChildrenProps, TaskProps } from '../../@types/task';
+import uuid from "react-native-uuid"
+import ViewTask from '../../screens/ViewTask';
 
 type Props = {
     title: string;
@@ -16,7 +19,10 @@ export function Header({ title, color, taskId }: Props) {
 
     const navigation = useNavigation();
 
+    const [input, setInput] = useState("");
+
     const [visible, setVisible] = useState(false);
+    const [modalAddvisible, setModalAddvisible] = useState(false);
     const scale = useRef(new Animated.Value(0)).current
 
     const options = [
@@ -25,12 +31,16 @@ export function Header({ title, color, taskId }: Props) {
             color: "red",
             action: () => handlePrepareTaskForDelete()
         },
-        // {
-        //     title: "Add Sub-Tarefa",
-        //     color: "#0645ad",
-        //     action: () => handleDeleteTask(task._id)
-        // }
+        {
+            title: "+ Tarefa",
+            color: "#0645ad",
+            action: () => setModalAddvisible(true)
+        }
     ]
+
+    function handleInputChange(text: string) {
+        setInput(text);
+    }
 
     async function handlePrepareTaskForDelete() {
         const realm = await getRealm()
@@ -45,6 +55,100 @@ export function Header({ title, color, taskId }: Props) {
             console.log(e)
         }
     }
+
+    function handleAddSubTask() {
+        if (input != "") {
+            var children: ChildrenProps = {
+                _id: uuid.v4(),
+                title: input,
+                description: "",
+                color: color,
+                priority: "Normal",
+                deadline: "",
+                finished_at: "",
+                created_at: new Date().toISOString().slice(0, 10),
+            }
+            addSubTask(children)
+        }
+    }
+
+    function objectConstruction(data: TaskProps) {
+        const task = {
+            _id: data._id,
+            title: data.title,
+            description: data.description,
+            color: data.color,
+            super: data.super,
+            children: data.children,
+            historic: data.historic,
+            priority: data.priority,
+            finished_at: data.finished_at,
+            created_at: data.created_at.toISOString()
+        }
+        return task
+    }
+
+    async function addSubTask(children: ChildrenProps) {
+        const realm = await getRealm();
+
+        try {
+            const task = realm.objectForPrimaryKey("Task", taskId);
+            if (task!.historic == false) {
+                realm.write(() => {
+                    task!.super = true
+                    //@ts-ignore
+                    task.children.push(children);
+                });
+            }
+            setInput("")
+            setModalAddvisible(false)
+            if(title == "Tarefa"){
+                console.log(task)
+                //@ts-ignore
+                navigation.navigate("ViewSuperTask", { task: objectConstruction(task) });
+            }
+        } catch (error) {
+            console.log("Message error:", error);
+        }
+    }
+
+    function returnBtn() {
+        if (title == "Tarefa" || title == "Super Tarefa") {
+            const handleNavigateToHome = () => {
+                navigation.reset({
+                    index: 0,
+                    //@ts-ignore
+                    routes: [{ name: 'Tasks' }]
+                });
+            };
+            return (
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleNavigateToHome}
+                >
+                    <Icon
+                        name='chevron-left'
+                        color={"#fff"}
+                        size={40}
+                    />
+                </TouchableOpacity>
+            )
+        } else {
+            return (
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Icon
+                        name='chevron-left'
+                        color={"#fff"}
+                        size={40}
+                    />
+                </TouchableOpacity>
+            )
+        }
+    }
+
 
     function resizeBox(to: number) {
         to === 1 && setVisible(true)
@@ -71,7 +175,7 @@ export function Header({ title, color, taskId }: Props) {
                     />
                 </TouchableOpacity>
             )
-        } else if (title == "Tarefa") {
+        } else if (title == "Tarefa" || title == "Super Tarefa") {
             return (
                 <TouchableOpacity
                     style={styles.button}
@@ -98,16 +202,7 @@ export function Header({ title, color, taskId }: Props) {
                 showHideTransition={"slide"}
                 hidden={false}
             />
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.goBack()}
-            >
-                <Icon
-                    name='chevron-left'
-                    color={"#fff"}
-                    size={40}
-                />
-            </TouchableOpacity>
+            {returnBtn()}
 
             <View style={styles.content}>
                 <Text style={styles.title}>
@@ -141,6 +236,34 @@ export function Header({ title, color, taskId }: Props) {
 
                         }
                     </Animated.View>
+                </SafeAreaView>
+            </Modal>
+            <Modal transparent visible={modalAddvisible}>
+                <SafeAreaView
+                    style={{ flex: 1, display: 'flex', justifyContent: 'center', backgroundColor: "rgba(0, 0, 0, .5)" }}
+                >
+                    <View style={styles.popupAddTask}>
+                        <View>
+                            <View style={styles.label}>
+                                <Text style={{ color: "#000" }}>Nome da nova tarefa:</Text>
+                                <TouchableOpacity onPress={() => setModalAddvisible(false)}>
+                                    <Icon
+                                        name='x'
+                                        color={"crimson"}
+                                        size={30}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <TextInput
+                                style={styles.input}
+                                value={input}
+                                onChangeText={handleInputChange}
+                            />
+                        </View>
+                        <TouchableOpacity onPress={handleAddSubTask} style={styles.addButton}>
+                            <Text style={styles.buttonText}>Adicionar Tarefa</Text>
+                        </TouchableOpacity>
+                    </View>
                 </SafeAreaView>
             </Modal>
         </View>
@@ -181,6 +304,34 @@ export const styles = StyleSheet.create({
         top: 50,
         right: 20,
         backgroundColor: "white",
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    popupAddTask: {
+        flex: 1,
+        width: "80%",
+        borderRadius: 8,
+        borderColor: "#333",
+        padding: 10,
+        position: "absolute",
+        alignSelf: 'center',
+        gap: 20,
+        backgroundColor: "white",
+        zIndex: 100,
+    },
+    label: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    input: {
+        width: "100%",
+        height: 40,
+        borderWidth: 1,
+        borderColor: "#303030",
+        borderRadius: 10,
+        color: "#000",
     },
     option: {
         flexDirection: "row",
@@ -188,5 +339,16 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         paddingVertical: 7,
         borderBottomColor: "#ccc",
-    }
+    },
+    addButton: {
+        backgroundColor: '#0645ad',
+        borderRadius: 10,
+        padding: 15,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: 18,
+    },
 });

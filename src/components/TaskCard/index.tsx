@@ -4,6 +4,9 @@ import { getRealm } from '../../database/realm';
 import { useCallback, useEffect, useState } from 'react';
 import { CheckBox } from 'react-native-elements';
 import { TaskProps } from '../../@types/task';
+import { CalculateTaskPercent } from '../../utils/task/CalculateTaskPercent';
+//@ts-ignore
+import ProgressBar from 'react-native-progress/Bar';
 
 type Props = {
     data: TaskProps;
@@ -16,8 +19,13 @@ export function TaskCard({ data, disable }: Props) {
     const [isChecked, setIsChecked] = useState(false);
 
     function handleOpenTask() {
-        //@ts-ignore
-        navigation.navigate("ViewTask", { task: objectConstruction(data) });
+        if(data.super){
+            //@ts-ignore
+            navigation.navigate("ViewSuperTask", { task: objectConstruction(data) });
+        } else {
+            //@ts-ignore
+            navigation.navigate("ViewTask", { task: objectConstruction(data) });
+        }
     }
 
     async function ToggleTaskStatus(idTask: string) {
@@ -43,6 +51,8 @@ export function TaskCard({ data, disable }: Props) {
             title: data.title,
             description: data.description,
             color: data.color,
+            super: data.super,
+            historic: data.historic,
             priority: data.priority,
             finished_at: data.finished_at,
             created_at: data.created_at.toISOString()
@@ -50,23 +60,49 @@ export function TaskCard({ data, disable }: Props) {
         return task
     }
 
+    function generateCardSuper() {
+        var conclusionPercente = CalculateTaskPercent(data.children)
+        if (conclusionPercente == 1) {
+            return (
+                <View style={styles.contentSuperDone}>
+                    <TouchableOpacity
+                        style={styles.cardNameSuper}
+                        onPress={() => handleOpenTask()}
+                    >
+                        <Text style={{ color: "#303030", fontWeight: "600" }}>{data.title}</Text>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{color: data.color, fontWeight: '900'}}>CONCLUIDO!</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            )
+        } else {
+            return (
+                <View style={styles.contentSuper}>
+                    <TouchableOpacity
+                        style={styles.cardNameSuper}
+                        onPress={() => handleOpenTask()}
+                    >
+                        <Text style={{ color: "#303030", fontWeight: "600", width: "45%" }}>{data.title}</Text>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <ProgressBar
+                                progress={CalculateTaskPercent(data.children)}
+                                width={150}
+                                height={10}
+                                color={data.color}
+                            />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+    }
+
     return (
         <View style={data.finished_at == "" ? styles.container : styles.containerStatusDone}>
             <View style={[styles.tag, { backgroundColor: data.color }]}></View>
             {data.super ?
-                <View style={styles.content}>
-                    <TouchableOpacity
-                        style={styles.cardName}
-                        onPress={() => handleOpenTask()}
-                    >
-                        <Text style={{ color: "#303030", fontWeight: "600" }}>{data.title}</Text>
-                    </TouchableOpacity>
-                    <CheckBox
-                        checked={data.finished_at == "" ? false : true}
-                        onPress={() => ToggleTaskStatus(data._id)}
-                        disabled={disable}
-                    />
-                </View>
+                generateCardSuper()
                 :
                 <View style={styles.content}>
                     <TouchableOpacity
@@ -95,6 +131,25 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
         overflow: 'hidden'
     },
+    contentSuper: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 80,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        overflow: 'hidden'
+    },
+    contentSuperDone: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 80,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        overflow: 'hidden',
+        opacity: 0.5,
+    },
     containerStatusDone: {
         display: 'flex',
         flexDirection: 'row',
@@ -117,5 +172,13 @@ export const styles = StyleSheet.create({
     },
     cardName: {
         marginLeft: "10%",
+    },
+    cardNameSuper: {
+        display: 'flex',
+        width: "80%",
+        marginLeft: "10%",
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        gap: 5,
     },
 });
