@@ -7,6 +7,7 @@ import { TaskProps } from '../../@types/task';
 import { CalculateTaskPercent } from '../../utils/task/CalculateTaskPercent';
 //@ts-ignore
 import ProgressBar from 'react-native-progress/Bar';
+import { TaskBuilder } from '../../utils/task/Builder';
 
 type Props = {
     data: TaskProps;
@@ -21,10 +22,10 @@ export function TaskCard({ data, disable }: Props) {
     function handleOpenTask() {
         if(data.super){
             //@ts-ignore
-            navigation.navigate("ViewSuperTask", { task: objectConstruction(data) });
+            navigation.navigate("ViewSuperTask", { task: TaskBuilder(data) });
         } else {
             //@ts-ignore
-            navigation.navigate("ViewTask", { task: objectConstruction(data) });
+            navigation.navigate("ViewTask", { task: TaskBuilder(data) });
         }
     }
 
@@ -43,21 +44,6 @@ export function TaskCard({ data, disable }: Props) {
         } catch (error) {
             console.log("Erro ao mudar status tarefa:", error);
         }
-    }
-
-    function objectConstruction(data: TaskProps) {
-        const task = {
-            _id: data._id,
-            title: data.title,
-            description: data.description,
-            color: data.color,
-            super: data.super,
-            historic: data.historic,
-            priority: data.priority,
-            finished_at: data.finished_at,
-            created_at: data.created_at.toISOString()
-        }
-        return task
     }
 
     function generateCardSuper() {

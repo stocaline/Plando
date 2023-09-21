@@ -19,5 +19,5 @@ export type ChildrenProps = {
     priority: string,
     deadline: string,
     finished_at: string,
-    created_at: string,
+    created_at: Date,
 }

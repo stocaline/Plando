@@ -104,7 +104,7 @@ export default function ViewSuperTask({ route }) {
                 <View style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center' }}>
                     <ProgressBar
                         progress={taskProgress}
-                        width={200}
+                        width={300}
                         height={10}
                         color={task.color}
                     />
@@ -131,7 +131,7 @@ export default function ViewSuperTask({ route }) {
                                     <CheckBox
                                         checked={item.finished_at == "" ? false : true}
                                         onPress={() => ToggleSubTaskStatus(item._id)}
-                                        disabled={item.historic}
+                                        disabled={task.historic}
                                     />
                                 </View>
                             </View>
@@ -305,18 +305,11 @@ export const styles = StyleSheet.create({
         width: '100%',
     },
     listContent: {
-        padding: 24,
+        marginTop: 20,
         gap: 10,
     },
     footer: {
         flex: 1
-    },
-    progressBar: {
-        width: "100%",
-        height: 10,
-        backgroundColor: "#f0f0f0",
-        borderRadius: 25,
-        overflow: "hidden",
     },
     containerCard: {
         display: 'flex',

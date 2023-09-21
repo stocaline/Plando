@@ -1,4 +1,4 @@
-import { Animated, Easing, StatusBar, Text, TouchableOpacity, View, Modal, TextInput } from 'react-native';
+import { Animated, Easing, StatusBar, Text, TouchableOpacity, View, Modal, TextInput, Alert } from 'react-native';
 import Icon from "react-native-vector-icons/Feather"
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import { getRealm } from "../../database/realm";
 import { ChildrenProps, TaskProps } from '../../@types/task';
 import uuid from "react-native-uuid"
 import ViewTask from '../../screens/ViewTask';
+import { TaskBuilder } from '../../utils/task/Builder';
 
 type Props = {
     title: string;
@@ -66,26 +67,10 @@ export function Header({ title, color, taskId }: Props) {
                 priority: "Normal",
                 deadline: "",
                 finished_at: "",
-                created_at: new Date().toISOString().slice(0, 10),
+                created_at: new Date(),
             }
             addSubTask(children)
         }
-    }
-
-    function objectConstruction(data: TaskProps) {
-        const task = {
-            _id: data._id,
-            title: data.title,
-            description: data.description,
-            color: data.color,
-            super: data.super,
-            children: data.children,
-            historic: data.historic,
-            priority: data.priority,
-            finished_at: data.finished_at,
-            created_at: data.created_at.toISOString()
-        }
-        return task
     }
 
     async function addSubTask(children: ChildrenProps) {
@@ -99,14 +84,29 @@ export function Header({ title, color, taskId }: Props) {
                     //@ts-ignore
                     task.children.push(children);
                 });
+                setInput("")
+                setModalAddvisible(false)
+                if(title == "Tarefa"){
+                    //@ts-ignore
+                    navigation.navigate("ViewSuperTask", { task: TaskBuilder(task) });
+                }
+            } else {
+                setInput("")
+                setModalAddvisible(false)
+                Alert.alert(
+                    'Não é possivel adicionar tarefa',
+                    'Tarefas que já foram arquivadas não podem ser modificadas',
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => {},
+                      },
+                    ],
+                    { cancelable: true }
+                  ); 
+                  
             }
-            setInput("")
-            setModalAddvisible(false)
-            if(title == "Tarefa"){
-                console.log(task)
-                //@ts-ignore
-                navigation.navigate("ViewSuperTask", { task: objectConstruction(task) });
-            }
+            
         } catch (error) {
             console.log("Message error:", error);
         }
@@ -119,6 +119,26 @@ export function Header({ title, color, taskId }: Props) {
                     index: 0,
                     //@ts-ignore
                     routes: [{ name: 'Tasks' }]
+                });
+            };
+            return (
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleNavigateToHome}
+                >
+                    <Icon
+                        name='chevron-left'
+                        color={"#fff"}
+                        size={40}
+                    />
+                </TouchableOpacity>
+            )
+        } else if (title == "Tarefas") {
+            const handleNavigateToHome = () => {
+                navigation.reset({
+                    index: 0,
+                    //@ts-ignore
+                    routes: [{ name: 'Home' }]
                 });
             };
             return (
@@ -324,6 +344,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        marginBottom: 10
     },
     input: {
         width: "100%",
