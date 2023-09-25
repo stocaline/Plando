@@ -12,6 +12,11 @@ export default function Home() {
         navigation.navigate("Tasks")
     }
 
+    function goToProducts() {
+        //@ts-ignore
+        navigation.navigate("Products")
+    }
+
     function goToNotes() {
         //@ts-ignore
         navigation.navigate("Notes")
@@ -45,7 +50,7 @@ export default function Home() {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.btnDisable}
-                        onPress={() => console.log('clicou')}
+                        onPress={goToProducts}
                     >
                         <Icon
                             name='shopping-bag'

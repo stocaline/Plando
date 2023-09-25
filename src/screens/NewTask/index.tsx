@@ -50,7 +50,7 @@ export default function NewTask() {
 
     return (
         <SafeAreaView >
-            <Header title="Nova Tarefa" color={"#0645ad"} taskId=""/>
+            <Header title="Nova Tarefa" color={"#0645ad"} taskId="" productId={""}/>
             <View style={styles.container}>
                 <Text style={styles.label}>Título:</Text>
                 <TextInput

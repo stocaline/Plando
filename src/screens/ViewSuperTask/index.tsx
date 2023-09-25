@@ -173,7 +173,7 @@ export default function ViewSuperTask({ route }) {
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: task.color }]}>
-            <Header title="Super Tarefa" color={task.color} taskId={task._id} />
+            <Header title="Super Tarefa" color={task.color} taskId={task._id} productId={""} />
             <View style={[styles.main, { backgroundColor: task.color }]}>
 
                 <TextInput

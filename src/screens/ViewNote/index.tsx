@@ -26,7 +26,7 @@ export default function ViewNote({ route }) {
 
     return (
         <SafeAreaView>
-            <Header title="Anotação" color={"#0645ad"} taskId={""} />
+            <Header title="Anotação" color={"#0645ad"} taskId={""} productId={""} />
             <View style={styles.container}>
                 <TextInput
                     style={styles.title}

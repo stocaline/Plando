@@ -6,7 +6,7 @@ export default function Tasks() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header title="Tarefas" color={"#0645ad"} taskId=""/>
+            <Header title="Tarefas" color={"#0645ad"} taskId="" productId={""}/>
             <TabViewTask/>
         </SafeAreaView>
     );

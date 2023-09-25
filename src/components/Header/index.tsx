@@ -9,14 +9,17 @@ import { ChildrenProps, TaskProps } from '../../@types/task';
 import uuid from "react-native-uuid"
 import ViewTask from '../../screens/ViewTask';
 import { TaskBuilder } from '../../utils/task/Builder';
+import { getProduct } from '../../utils/Products/ProductFunctions';
+import { searchProduct } from '../../utils/Products/WebScrapping';
 
 type Props = {
     title: string;
     color: string;
     taskId: string;
+    productId: string;
 }
 
-export function Header({ title, color, taskId }: Props) {
+export function Header({ title, color, taskId, productId }: Props) {
 
     const navigation = useNavigation();
 
@@ -41,6 +44,26 @@ export function Header({ title, color, taskId }: Props) {
 
     function handleInputChange(text: string) {
         setInput(text);
+    }
+
+    async function handleSincInfo(){
+        var product = await getProduct(productId)
+        var status = await searchProduct(product!._id, product!.link)
+        if(status){
+            return
+        } else {
+            Alert.alert(
+                'Não foi possivel sincronizar seu produto',
+                'No momento não foi possivel sincronizar, verifique sua conexão de rede e tente novamente mais tarde.',
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => {},
+                    },
+                ],
+                { cancelable: true }
+            );
+        }
     }
 
     async function handleAddNote() {
@@ -237,6 +260,20 @@ export function Header({ title, color, taskId }: Props) {
                 >
                     <Icon
                         name='plus'
+                        color={"#fff"}
+                        size={20}
+                    />
+                </TouchableOpacity>
+            )
+        } else if (title == "Produto") {
+            return (
+                <TouchableOpacity
+                    style={styles.button}
+                    //@ts-ignore
+                    onPress={() => handleSincInfo()}
+                >
+                    <Icon
+                        name='refresh-cw'
                         color={"#fff"}
                         size={20}
                     />

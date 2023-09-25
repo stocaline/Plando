@@ -56,7 +56,7 @@ export default function ViewTask({ route }) {
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: task.color }]}>
-            <Header title="Tarefa" color={task.color} taskId={task._id} />
+            <Header title="Tarefa" color={task.color} taskId={task._id} productId={""} />
             <View style={[styles.main, { backgroundColor: task.color }]}>
 
                 <TextInput
