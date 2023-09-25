@@ -43,6 +43,26 @@ export function Header({ title, color, taskId }: Props) {
         setInput(text);
     }
 
+    async function handleAddNote() {
+        const realm = await getRealm()
+        var item = {
+            _id: uuid.v4(),
+            title: "Sem Titulo",
+            text: "",
+            created_at: new Date().toISOString().slice(0, 10),
+        }
+        try {
+            realm.write(() => {
+                realm.create("Notes", item)
+            })
+            //@ts-ignore
+            navigation.navigate("ViewNote", { note: item })
+
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     async function handlePrepareTaskForDelete() {
         const realm = await getRealm()
 
@@ -86,7 +106,7 @@ export function Header({ title, color, taskId }: Props) {
                 });
                 setInput("")
                 setModalAddvisible(false)
-                if(title == "Tarefa"){
+                if (title == "Tarefa") {
                     //@ts-ignore
                     navigation.navigate("ViewSuperTask", { task: TaskBuilder(task) });
                 }
@@ -97,16 +117,16 @@ export function Header({ title, color, taskId }: Props) {
                     'Não é possivel adicionar tarefa',
                     'Tarefas que já foram arquivadas não podem ser modificadas',
                     [
-                      {
-                        text: 'OK',
-                        onPress: () => {},
-                      },
+                        {
+                            text: 'OK',
+                            onPress: () => { },
+                        },
                     ],
                     { cancelable: true }
-                  ); 
-                  
+                );
+
             }
-            
+
         } catch (error) {
             console.log("Message error:", error);
         }
@@ -203,6 +223,20 @@ export function Header({ title, color, taskId }: Props) {
                 >
                     <Icon
                         name='more-vertical'
+                        color={"#fff"}
+                        size={20}
+                    />
+                </TouchableOpacity>
+            )
+        } else if (title == "Anotações") {
+            return (
+                <TouchableOpacity
+                    style={styles.button}
+                    //@ts-ignore
+                    onPress={() => handleAddNote()}
+                >
+                    <Icon
+                        name='plus'
                         color={"#fff"}
                         size={20}
                     />

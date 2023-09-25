@@ -5,6 +5,8 @@ import NewTask from "../screens/NewTask"
 import ViewTask from "../screens/ViewTask"
 import ViewSuperTask from "../screens/ViewSuperTask"
 import Tasks from "../screens/Tasks"
+import Notes from "../screens/Notes"
+import ViewNote from "../screens/ViewNote"
 
 const Stack = createNativeStackNavigator()
 
@@ -16,6 +18,8 @@ function AppRoutes() {
                 <Stack.Screen name="NewTask" component={NewTask} options={{ headerShown: false }} />
                 <Stack.Screen name="ViewTask" component={ViewTask} options={{ headerShown: false }} />
                 <Stack.Screen name="ViewSuperTask" component={ViewSuperTask} options={{ headerShown: false }} />
+                <Stack.Screen name="Notes" component={Notes} options={{ headerShown: false }} />
+                <Stack.Screen name="ViewNote" component={ViewNote} options={{ headerShown: false }} />
             </Stack.Navigator>
     )
 }

@@ -7,9 +7,14 @@ export default function Home() {
 
     const navigation = useNavigation();
 
-    function goToHome() {
+    function goToTasks() {
         //@ts-ignore
         navigation.navigate("Tasks")
+    }
+
+    function goToNotes() {
+        //@ts-ignore
+        navigation.navigate("Notes")
     }
 
     return (
@@ -29,7 +34,7 @@ export default function Home() {
                 <View style={styles.row}>
                     <TouchableOpacity
                         style={styles.btn}
-                        onPress={goToHome}
+                        onPress={goToTasks}
                     >
                         <Icon
                             name='clipboard'
@@ -52,8 +57,8 @@ export default function Home() {
                 </View>
                 <View style={styles.row}>
                     <TouchableOpacity
-                        style={styles.btnDisable}
-                        onPress={() => console.log('clicou')}
+                        style={styles.btn}
+                        onPress={goToNotes}
                     >
                         <Icon
                             name='bookmark'
