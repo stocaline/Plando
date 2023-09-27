@@ -18,6 +18,7 @@ export async function updateNoteTitle(id: string, newTitle: string) {
         realm.write(() => {
             const note = realm.objectForPrimaryKey("Notes", id);
             note!.title = title;
+            note!.updated_at = new Date().toISOString().slice(0, 10);
         });
     } catch (error) {
         console.log("Erro ao atualizar o título da tarefa:", error);
@@ -26,13 +27,15 @@ export async function updateNoteTitle(id: string, newTitle: string) {
     }
 }
 
-export async function handleUpdateNote(id: string, newText: string) {
+export async function handleUpdateNote(id: string, title: string, text: string) {
     const realm = await getRealm();
 
     try {
         realm.write(() => {
             const note = realm.objectForPrimaryKey("Notes", id);
-            note!.text = newText;
+            note!.title = title;
+            note!.text = text;
+            note!.updated_at = new Date().toISOString().slice(0, 10);
         });
     } catch (error) {
         console.log("Erro ao atualizar o título da tarefa:", error);

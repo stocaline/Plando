@@ -16,7 +16,7 @@ export function searchProduct(id: any, url: any){
     //       });
 
     //       // Atualizar o estado com os dados extraídos
-    //       updateProduct(id, "newName", "link", "img", "price") 
+    //       updateProduct(id, "name", "link", "img", "price") 
     //       return true;
     //     }
     //   })

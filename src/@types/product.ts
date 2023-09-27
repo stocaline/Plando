@@ -4,6 +4,7 @@ export type ProductsProps = {
     link: string,
     price: string,
     img: string,
+    from: string,
     purchased: boolean,
     created_at: Date,
 }

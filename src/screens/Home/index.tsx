@@ -34,9 +34,11 @@ export default function Home() {
             <View style={styles.header}>
                 <Text style={styles.title}>Plando</Text>
                 <Text style={styles.text}>Olá, qual será sua próxima realização?</Text>
+                <View style={styles.backgroundImage}></View>
             </View>
-            <View style={styles.menu}>
-                <View style={styles.row}>
+            <View style={styles.containerContent}>
+                <View style={styles.menu}>
+
                     <TouchableOpacity
                         style={styles.btn}
                         onPress={goToTasks}
@@ -44,23 +46,21 @@ export default function Home() {
                         <Icon
                             name='clipboard'
                             color={"#0645ad"}
-                            size={40}
+                            size={20}
                         />
                         <Text style={styles.btnText}>Tarefas</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.btnDisable}
+                        style={styles.btn}
                         onPress={goToProducts}
                     >
                         <Icon
                             name='shopping-bag'
                             color={"#0645ad"}
-                            size={40}
+                            size={20}
                         />
-                        <Text style={styles.btnText}>Lista de compras</Text>
+                        <Text style={styles.btnText}>Compras</Text>
                     </TouchableOpacity>
-                </View>
-                <View style={styles.row}>
                     <TouchableOpacity
                         style={styles.btn}
                         onPress={goToNotes}
@@ -68,24 +68,20 @@ export default function Home() {
                         <Icon
                             name='bookmark'
                             color={"#0645ad"}
-                            size={40}
+                            size={20}
                         />
                         <Text style={styles.btnText}>Anotações</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.btnDisable}
-                        onPress={() => console.log('clicou')}
-                    >
-                        <Icon
-                            name='calendar'
-                            color={"#0645ad"}
-                            size={40}
-                        />
-                        <Text style={styles.btnText}>Calendario</Text>
-                    </TouchableOpacity>
+                </View>
+                <View style={styles.bottomContent}>
+                    <Icon
+                        name='codesandbox'
+                        color={"#ccc"}
+                        size={100}
+                    />
+                    <Text style={{color: "#ccc", fontSize: 20}}>Área em Desenvolvimento</Text>
                 </View>
             </View>
-            <View style={styles.backgroundImage}></View>
         </SafeAreaView>
     );
 }
@@ -117,41 +113,45 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#fff',
     },
+    containerContent: {
+        flex: 1,
+        width: "100%",
+        display: "flex",
+        backgroundColor: "#fff",
+        borderTopRightRadius: 50,
+        borderTopLeftRadius: 50,
+
+    },
     menu: {
         display: "flex",
-        width: "40%",
-        height: "50%",
+        flexDirection: "row",
+        width: "100%",
         justifyContent: "center",
-        alignItems: "center",
-        gap: 10
-    },
-    row: {
-        flexDirection: 'row',
-        gap: 10
+        gap: 30
     },
     btn: {
         display: "flex",
-        width: "100%",
-        height: "100%",
+        width: 80,
+        height: 80,
         padding: 5,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#fff",
-        borderRadius: 10,
+        borderRadius: 50,
     },
     btnDisable: {
         display: "flex",
-        width: "100%",
-        height: "100%",
+        width: 80,
+        height: 80,
         padding: 5,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "rgba(255, 255, 255, .8)",
-        borderRadius: 10,
+        borderRadius: 50,
     },
     btnText: {
         color: "#0645ad",
-        fontSize: 20,
+        fontSize: 14,
         fontWeight: "bold",
     },
     backgroundImage: {
@@ -160,8 +160,14 @@ const styles = StyleSheet.create({
         width: 500,
         height: 500,
         borderRadius: 500,
-        bottom: -250,
-        right: -200,
+        bottom: -100,
+        right: -400,
         zIndex: -1
     },
+    bottomContent: {
+        display: "flex",
+        height: "90%",
+        alignItems: "center",
+        justifyContent: "center"
+    }
 })

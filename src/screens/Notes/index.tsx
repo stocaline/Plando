@@ -6,6 +6,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { deleteNote } from "../../utils/Notes/NotesFunctions";
 import { Text } from "react-native-elements";
 import { NoteProps } from "../../@types/note";
+import { dateFormat } from "../../utils/data";
 
 export default function Notes() {
 
@@ -36,7 +37,7 @@ export default function Notes() {
         const realm = await getRealm()
 
         try {
-            const response = realm.objects("Notes")
+            const response = realm.objects("Notes").sorted('updated_at', true)
             //@ts-ignore
             setNotes(response)
 
@@ -49,10 +50,11 @@ export default function Notes() {
 
     function openNote(note: NoteProps) {
         const item = {
-            "_id": note._id,
-            "title": note.title,
-            "text": note.text,
-            "created_at": note.created_at.toISOString(),
+            _id: note._id,
+            title: note.title,
+            text: note.text,
+            updated_at: note.updated_at.toISOString(),
+            created_at: note.created_at.toISOString()
         }
         //@ts-ignore
         navigation.navigate("ViewNote", { note: item })
@@ -64,23 +66,27 @@ export default function Notes() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <Header title="Anotações" color={"#0645ad"} taskId={""} />
+            <Header title="Anotações" color={"#0645ad"} taskId={""} productId={""} />
             <View style={styles.container}>
                 {notes.length > 0 ?
                     <FlatList
                         style={styles.list}
                         contentContainerStyle={styles.listContent}
-                        columnWrapperStyle={{gap: 30}}
+                        columnWrapperStyle={{ gap: 30 }}
                         data={notes}
                         keyExtractor={item => item._id}
-                        numColumns={2}  
+                        numColumns={2}
                         renderItem={({ item }) =>
                             <TouchableOpacity
                                 style={styles.cardNote}
                                 onPress={() => openNote(item)}
                                 onLongPress={() => handleDeleteNote(item._id)}
                             >
-                                <Text style={{color: "#fff", alignSelf: "center",}}>{item.title}</Text>
+
+                                <Text style={{ color: "#fff" }}>{item.title}</Text>
+                                <Text style={{ color: "#ddd" }}>{item.text.slice(0, 20)}</Text>
+                                <Text style={{ color: "#ccc" }}>{dateFormat(item.updated_at.toISOString())}</Text>
+
                             </TouchableOpacity>
                         }
                     />
@@ -101,7 +107,7 @@ export const styles = StyleSheet.create({
     },
     list: {
         display: "flex",
-        width: "80%",
+        width: "90%",
         marginTop: 20,
     },
     listContent: {
@@ -110,11 +116,12 @@ export const styles = StyleSheet.create({
         gap: 30,
     },
     cardNote: {
-        width: 130,
-        height: 130,
+        width: 150,
+        height: 120,
         backgroundColor: "#0645ad",
-        borderRadius: 10,
+        borderRadius: 5,
+        padding: 5,
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "space-between"
     },
 })

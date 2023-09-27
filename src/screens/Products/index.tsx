@@ -3,7 +3,7 @@ import { Header } from "../../components/Header";
 import { getRealm } from "../../database/realm";
 import { useCallback, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { ProductsProps } from "../../@types/products";
+import { ProductsProps } from "../../@types/product";
 import { Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/Feather";
 import { deleteProduct, handleAddProduct } from "../../utils/Products/ProductFunctions";
@@ -49,18 +49,19 @@ export default function Products() {
         }
     }
 
-    function handleInputChange(text: string){
+    function handleInputChange(text: string) {
         setInputLink(text)
     }
 
     function openProduct(product: ProductsProps) {
         const item = {
-            "_id": product._id,
-            "name": product.name,
-            "price": product.price,
-            "img": product.img,
-            "link": product.link,
-            "created_at": product.created_at.toISOString(),
+            _id: product._id,
+            name: product.name,
+            price: product.price,
+            img: product.img,
+            link: product.link,
+            from: product.from,
+            created_at: product.created_at.toISOString(),
         }
         //@ts-ignore
         navigation.navigate("ViewProduct", { product: item })
@@ -77,57 +78,77 @@ export default function Products() {
                 <FlatList
                     style={styles.list}
                     contentContainerStyle={styles.listContent}
-                    columnWrapperStyle={{ gap: 30 }}
+                    columnWrapperStyle={{ gap: 10 }}
                     data={products}
                     keyExtractor={item => item._id}
                     numColumns={2}
                     renderItem={({ item }) =>
                         <TouchableOpacity
-                            style={styles.cardNote}
+                            style={styles.cardProduct}
                             onPress={() => openProduct(item)}
                             onLongPress={() => handleDeleteNote(item._id)}
                         >
-                            <Text style={{ color: "#fff", alignSelf: "center", }}>{item.name}</Text>
+                            {item.img == "" ?
+                                <View style={styles.imageContainer}>
+                                    <Icon
+                                        name='image'
+                                        color={"#fff"}
+                                        size={40}
+                                    />
+                                </View>
+                                :
+                                // <Image
+                                //     source={require('./caminho-da-imagem/minha-imagem.jpg')}
+                                //     style={{ width: 200, height: 200 }}
+                                // />
+                                <Icon
+                                    name='chevron-left'
+                                    color={"#fff"}
+                                    size={40}
+                                />
+                            }
+                            <View style={styles.productInfo}>
+                                <Text style={{ color: "#000"}}>{item.name}</Text>
+                            </View>
                         </TouchableOpacity>
                     }
                 />
                 <TouchableOpacity
-                    style={styles.cardNote}
+                    style={styles.addBtn}
                     onPress={() => setModalAddvisible(true)}
                 >
-                    <Text style={{ color: "#fff", alignSelf: "center", }}>+</Text>
-                    <Text style={{ color: "#fff", alignSelf: "center", }}>Adicionar Produto</Text>
+                    <Text style={{ color: "#fff", alignSelf: "center", fontSize: 20 }}>+</Text>
                 </TouchableOpacity>
             </View>
             <Modal transparent visible={modalAddvisible}>
-                    <SafeAreaView
-                        style={{ flex: 1, display: 'flex', justifyContent: 'center', backgroundColor: "rgba(0, 0, 0, .5)" }}
-                    >
-                        <View style={styles.popupAddProduct}>
-                            <View>
-                                <View style={styles.label}>
-                                    <Text style={{ color: "#000" }}>Digite o link do seu produto:</Text>
-                                    <TouchableOpacity onPress={() => setModalAddvisible(false)}>
-                                        <Icon
-                                            name='x'
-                                            color={"crimson"}
-                                            size={30}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <TextInput
-                                    style={styles.input}
-                                    value={inputLink}
-                                    onChangeText={handleInputChange}
-                                    maxLength={30}
-                                />
+                <SafeAreaView
+                    style={{ flex: 1, display: 'flex', justifyContent: 'center', backgroundColor: "rgba(0, 0, 0, .5)" }}
+                >
+                    <View style={styles.popupAddProduct}>
+                        <View>
+                            <View style={styles.label}>
+                                <Text style={{ color: "#000" }}>Digite o link do seu produto:</Text>
+                                <TouchableOpacity onPress={() => setModalAddvisible(false)}>
+                                    <Icon
+                                        name='x'
+                                        color={"crimson"}
+                                        size={30}
+                                    />
+                                </TouchableOpacity>
                             </View>
-                            <TouchableOpacity onPress={() => { handleAddProduct(inputLink), setModalAddvisible(false), setInputLink("") }} style={styles.addBtn}>
-                                <Text style={styles.btnText}>Adicionar Produto</Text>
-                            </TouchableOpacity>
+                            <TextInput
+                                style={styles.input}
+                                value={inputLink}
+                                onChangeText={handleInputChange}
+                                maxLength={30}
+                            />
                         </View>
-                    </SafeAreaView>
-                </Modal>
+                        <TouchableOpacity onPress={() => { handleAddProduct(inputLink), setModalAddvisible(false), setInputLink(""), handleFetchData() }} style={styles.modalAddBtn}>
+                            <Text style={styles.btnText}>Adicionar Produto</Text>
+                        </TouchableOpacity>
+                    </View>
+                </SafeAreaView>
+            </Modal>
         </SafeAreaView>
     )
 }
@@ -141,7 +162,7 @@ export const styles = StyleSheet.create({
     },
     list: {
         display: "flex",
-        width: "80%",
+        width: "100%",
         marginTop: 20,
     },
     listContent: {
@@ -149,13 +170,24 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         gap: 30,
     },
-    cardNote: {
-        width: 130,
-        height: 130,
-        backgroundColor: "#0645ad",
+    cardProduct: {
+        width: 140,
+        height: 200,
+        borderWidth: 1,
+        borderColor: "#303030",
         borderRadius: 10,
         display: "flex",
+    },
+    imageContainer: {
+        height: "40%",
+        display: "flex",
+        alignItems: "center",
         justifyContent: "center",
+        backgroundColor: "#dbdbdb"
+    },
+    productInfo: {
+        height:"60%",
+        padding: 10,
     },
     popupAddProduct: {
         flex: 1,
@@ -184,6 +216,18 @@ export const styles = StyleSheet.create({
         color: "#000",
     },
     addBtn: {
+        marginRight: 20,
+        marginBottom: 20,
+        width: 50,
+        height: 50,
+        backgroundColor: '#0645ad',
+        borderRadius: 50,
+        padding: 5,
+        alignItems: 'center',
+        justifyContent: "center",
+        alignSelf: "flex-end"
+    },
+    modalAddBtn: {
         backgroundColor: '#0645ad',
         borderRadius: 10,
         padding: 15,

@@ -19,9 +19,10 @@ export default function ViewNote({ route }) {
         setText(text);
         setUpdated(true)
     }
-
+    
     function handleInputTitleChange(text: string) {
         setTitle(text);
+        setUpdated(true)
     }
 
     return (
@@ -32,7 +33,6 @@ export default function ViewNote({ route }) {
                     style={styles.title}
                     value={title}
                     onChangeText={handleInputTitleChange}
-                    onSubmitEditing={() => updateNoteTitle(note._id, title)}
                     maxLength={30}
                 />
                 <TextInput
@@ -42,7 +42,7 @@ export default function ViewNote({ route }) {
                     value={text}
                     onChangeText={handleInputDescriptionChange}
                 />
-                <TouchableOpacity style={[styles.addButton, updated ? {display: "flex"} : {display: "none"}]} onPress={() => {handleUpdateNote(note._id, text), setUpdated(false)}}>
+                <TouchableOpacity style={[styles.addButton, updated ? {display: "flex"} : {display: "none"}]} onPress={() => {handleUpdateNote(note._id, title, text), setUpdated(false)}}>
                     <Text style={styles.buttonText}>Salvar</Text>
                 </TouchableOpacity>
             </View>

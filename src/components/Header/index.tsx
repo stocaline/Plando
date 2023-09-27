@@ -72,6 +72,7 @@ export function Header({ title, color, taskId, productId }: Props) {
             _id: uuid.v4(),
             title: "Sem Titulo",
             text: "",
+            updated_at: new Date().toISOString().slice(0, 10),
             created_at: new Date().toISOString().slice(0, 10),
         }
         try {

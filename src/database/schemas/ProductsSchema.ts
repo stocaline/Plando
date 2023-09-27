@@ -6,6 +6,7 @@ export const ProductsSchema = {
         link: "string",
         price: "string",
         img: "string",
+        from: "string",
         purchased: "bool",
         created_at: "date",
     },

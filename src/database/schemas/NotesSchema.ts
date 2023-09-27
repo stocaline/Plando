@@ -4,6 +4,7 @@ export const NotesSchema = {
         _id: "string",
         title: "string",
         text: "string",
+        updated_at: "date",
         created_at: "date",
     },
     

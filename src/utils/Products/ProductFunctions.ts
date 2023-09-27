@@ -24,6 +24,7 @@ export async function handleAddProduct(link : string) {
         link: link,
         price: "",
         img: "",
+        from: "",
         purchased: false,
         created_at: new Date().toISOString().slice(0, 10),
     }
