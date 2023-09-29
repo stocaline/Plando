@@ -1,4 +1,4 @@
-import { Animated, Easing, StatusBar, Text, TouchableOpacity, View, Modal, TextInput, Alert } from 'react-native';
+import { Animated, Easing, StatusBar, Text, TouchableOpacity, View, Modal, TextInput, Alert, ActivityIndicator } from 'react-native';
 import Icon from "react-native-vector-icons/Feather"
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +11,7 @@ import ViewTask from '../../screens/ViewTask';
 import { TaskBuilder } from '../../utils/task/Builder';
 import { getProduct } from '../../utils/Products/ProductFunctions';
 import { searchProduct } from '../../utils/Products/WebScrapping';
+import { openProduct } from '../../utils/Products/Builder';
 
 type Props = {
     title: string;
@@ -27,6 +28,7 @@ export function Header({ title, color, taskId, productId }: Props) {
 
     const [visible, setVisible] = useState(false);
     const [modalAddvisible, setModalAddvisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const scale = useRef(new Animated.Value(0)).current
 
     const options = [
@@ -46,19 +48,24 @@ export function Header({ title, color, taskId, productId }: Props) {
         setInput(text);
     }
 
-    async function handleSincInfo(){
+    async function handleSincInfo() {
+        setIsLoading(true)
         var product = await getProduct(productId)
-        var status = await searchProduct(product!._id, product!.link)
-        if(status){
-            return
+        await searchProduct(product!._id, product!.link)
+        var item = await getProduct(productId)
+        if (item) {
+            setIsLoading(false)
+            //@ts-ignore 
+            openProduct(item, navigation)
         } else {
+            setIsLoading(false)
             Alert.alert(
                 'Não foi possivel sincronizar seu produto',
                 'No momento não foi possivel sincronizar, verifique sua conexão de rede e tente novamente mais tarde.',
                 [
                     {
                         text: 'OK',
-                        onPress: () => {},
+                        onPress: () => { },
                     },
                 ],
                 { cancelable: true }
@@ -197,7 +204,47 @@ export function Header({ title, color, taskId, productId }: Props) {
                     />
                 </TouchableOpacity>
             )
-        } else {
+             } else if (title == "Produtos") {
+                const handleNavigateToHome = () => {
+                    navigation.reset({
+                        index: 0,
+                        //@ts-ignore
+                        routes: [{ name: 'Home' }]
+                    });
+                };
+                return (
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleNavigateToHome}
+                    >
+                        <Icon
+                            name='chevron-left'
+                            color={"#fff"}
+                            size={40}
+                        />
+                    </TouchableOpacity>
+                )
+             } else if (title == "Produto") {
+                const handleNavigateToProducts = () => {
+                    navigation.reset({
+                        index: 0,
+                        //@ts-ignore
+                        routes: [{ name: 'Products' }]
+                    });
+                };
+                return (
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleNavigateToProducts}
+                    >
+                        <Icon
+                            name='chevron-left'
+                            color={"#fff"}
+                            size={40}
+                        />
+                    </TouchableOpacity>
+                )
+            } else {
             return (
                 <TouchableOpacity
                     style={styles.button}
@@ -358,6 +405,17 @@ export function Header({ title, color, taskId, productId }: Props) {
                     </View>
                 </SafeAreaView>
             </Modal>
+            {isLoading ?
+                <Modal transparent>
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="large" color="#0000ff" />
+                        <Text>Carregando...</Text>
+                    </View>
+                </Modal>
+                :
+                <View></View>
+            }
+
         </View>
 
     );
@@ -443,5 +501,16 @@ export const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: '600',
         fontSize: 18,
+    },
+    loadingContainer: {
+        width: "100%",
+        height: "100%",
+        position: 'absolute',
+        backgroundColor: "rgba(0,0,0,0.2)",
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        zIndex: 999,
     },
 });

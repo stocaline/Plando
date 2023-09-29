@@ -83,9 +83,9 @@ export default function Notes() {
                                 onLongPress={() => handleDeleteNote(item._id)}
                             >
 
-                                <Text style={{ color: "#fff" }}>{item.title}</Text>
-                                <Text style={{ color: "#ddd" }}>{item.text.slice(0, 20)}</Text>
-                                <Text style={{ color: "#ccc" }}>{dateFormat(item.updated_at.toISOString())}</Text>
+                                <Text style={{ color: "#0645ad" }}>{item.title}</Text>
+                                <Text style={{ color: "#303030" }}>{item.text.slice(0, 20)}</Text>
+                                <Text style={{ color: "#252525" }}>{dateFormat(item.updated_at.toISOString())}</Text>
 
                             </TouchableOpacity>
                         }
@@ -118,10 +118,11 @@ export const styles = StyleSheet.create({
     cardNote: {
         width: 150,
         height: 120,
-        backgroundColor: "#0645ad",
+        backgroundColor: "white",
         borderRadius: 5,
         padding: 5,
         display: "flex",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        elevation: 2,
     },
 })

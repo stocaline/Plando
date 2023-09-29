@@ -1,4 +1,4 @@
-import { Alert, FlatList, Modal, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Image, Modal, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { Header } from "../../components/Header";
 import { getRealm } from "../../database/realm";
 import { useCallback, useState } from "react";
@@ -7,10 +7,12 @@ import { ProductsProps } from "../../@types/product";
 import { Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/Feather";
 import { deleteProduct, handleAddProduct } from "../../utils/Products/ProductFunctions";
+import { openProduct } from "../../utils/Products/Builder";
 
 export default function Products() {
 
     const navigation = useNavigation();
+    const tagImage = "../../assets/imgs/kabum.png"
     const [products, setProducts] = useState<ProductsProps[]>([])
     const [inputLink, setInputLink] = useState("")
     const [modalAddvisible, setModalAddvisible] = useState(false)
@@ -53,20 +55,6 @@ export default function Products() {
         setInputLink(text)
     }
 
-    function openProduct(product: ProductsProps) {
-        const item = {
-            _id: product._id,
-            name: product.name,
-            price: product.price,
-            img: product.img,
-            link: product.link,
-            from: product.from,
-            created_at: product.created_at.toISOString(),
-        }
-        //@ts-ignore
-        navigation.navigate("ViewProduct", { product: item })
-    }
-
     useFocusEffect(useCallback(() => {
         handleFetchData()
     }, []))
@@ -75,6 +63,7 @@ export default function Products() {
         <SafeAreaView style={{ flex: 1 }}>
             <Header title="Produtos" color={"#0645ad"} taskId={""} productId={""} />
             <View style={styles.container}>
+                { products.length > 0 ?
                 <FlatList
                     style={styles.list}
                     contentContainerStyle={styles.listContent}
@@ -85,7 +74,7 @@ export default function Products() {
                     renderItem={({ item }) =>
                         <TouchableOpacity
                             style={styles.cardProduct}
-                            onPress={() => openProduct(item)}
+                            onPress={() => openProduct(item, navigation)}
                             onLongPress={() => handleDeleteNote(item._id)}
                         >
                             {item.img == "" ?
@@ -108,11 +97,14 @@ export default function Products() {
                                 />
                             }
                             <View style={styles.productInfo}>
-                                <Text style={{ color: "#000"}}>{item.name}</Text>
+                                <Text style={{ color: "#000" }}>{item.name}</Text>
                             </View>
                         </TouchableOpacity>
                     }
                 />
+                :
+                <Text>Nenhum produto cadastrado</Text>
+                }
                 <TouchableOpacity
                     style={styles.addBtn}
                     onPress={() => setModalAddvisible(true)}
@@ -139,9 +131,10 @@ export default function Products() {
                             <TextInput
                                 style={styles.input}
                                 value={inputLink}
+                                placeholder="www.exemplo.com"
                                 onChangeText={handleInputChange}
-                                maxLength={30}
                             />
+                            <Text style={{ color: "#000" }}>Sites integrados: Kabum, Mercado livre, Aliexpress</Text>
                         </View>
                         <TouchableOpacity onPress={() => { handleAddProduct(inputLink), setModalAddvisible(false), setInputLink(""), handleFetchData() }} style={styles.modalAddBtn}>
                             <Text style={styles.btnText}>Adicionar Produto</Text>
@@ -173,20 +166,21 @@ export const styles = StyleSheet.create({
     cardProduct: {
         width: 140,
         height: 200,
-        borderWidth: 1,
         borderColor: "#303030",
         borderRadius: 10,
         display: "flex",
+        overflow: "hidden",
+        borderWidth: .5
     },
     imageContainer: {
         height: "40%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#dbdbdb"
+        backgroundColor: "#dbdbdb",
     },
     productInfo: {
-        height:"60%",
+        height: "60%",
         padding: 10,
     },
     popupAddProduct: {

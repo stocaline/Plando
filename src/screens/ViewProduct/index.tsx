@@ -1,16 +1,28 @@
-import { SafeAreaView, StyleSheet, TextInput, Touchable, TouchableOpacity, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, TextInput, Touchable, TouchableOpacity, View, Text, Linking, Image } from "react-native";
 import { Header } from "../../components/Header";
-import { Image } from 'react-native';
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import Icon from "react-native-vector-icons/Feather";
+import { getProduct } from "../../utils/Products/ProductFunctions";
 
 //@ts-ignore
 export default function ViewProduct({ route }) {
     const { product } = route.params
 
+    const [name, setName] = useState(product.name)
+    const [price, setPrice] = useState(product.price)
+    const [tagImage, setTagImage] = useState("")
+
+    function openWebsite() {
+        const url = product.link
+        Linking.openURL(url);
+    }
+
+    useFocusEffect(useCallback(() => {
+    }, []))
+
     return (
-        <SafeAreaView style={{backgroundColor: "#dbdbdb"}}>
+        <SafeAreaView style={{ backgroundColor: "#dbdbdb" }}>
             <Header title="Produto" color={"#0645ad"} taskId={""} productId={product._id} />
             {product.img == "" ?
                 <View style={styles.imageContainer}>
@@ -21,24 +33,23 @@ export default function ViewProduct({ route }) {
                     />
                 </View>
                 :
-                // <Image
-                //     source={require('./caminho-da-imagem/minha-imagem.jpg')}
-                //     style={{ width: 200, height: 200 }}
-                // />
-                <Icon
-                    name='chevron-left'
-                    color={"#fff"}
-                    size={40}
+                <Image
+                    source={{ uri: product.img }}
+                    style={{ width: 0, height: 0 }}
                 />
+                // <Icon
+                //     name='chevron-left'
+                //     color={"#fff"}
+                //     size={40}
+                // />
             }
 
             <View style={styles.container}>
                 <View style={styles.productContainer}>
-                    <Text style={styles.text}>Item 1</Text>
-                    <Text style={styles.text}>Preço: {product.price || "Não sincronizado"}</Text>
-                    <Text style={styles.text}>{product.link}</Text>
-                    <TouchableOpacity style={styles.btn}>
-                        <Text style={styles.btnText}>Comprar</Text>
+                    <Text style={styles.text}>{name}</Text>
+                    <Text style={styles.text}>Preço: {price || "Não sincronizado"}</Text>
+                    <TouchableOpacity style={styles.btn} onPress={openWebsite}>
+                        <Text style={styles.btnText}>Visitar Site</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -48,6 +59,7 @@ export default function ViewProduct({ route }) {
 
 export const styles = StyleSheet.create({
     container: {
+        height: "100%",
         display: "flex",
         backgroundColor: "#dbdbdb"
     },
@@ -59,6 +71,7 @@ export const styles = StyleSheet.create({
     },
     productContainer: {
         display: "flex",
+        height: "100%",
         padding: 15,
         borderTopRightRadius: 30,
         borderTopLeftRadiusRadius: 30,
