@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { getRealm } from '../../database/realm';
 import { useCallback, useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { CalculateTaskPercent } from '../../utils/task/CalculateTaskPercent';
 //@ts-ignore
 import ProgressBar from 'react-native-progress/Bar';
 import { TaskBuilder } from '../../utils/task/Builder';
+import { deleteTask } from '../../utils/task/TaskFunctions';
 
 type Props = {
     data: TaskProps;
@@ -27,6 +28,25 @@ export function TaskCard({ data, disable }: Props) {
             //@ts-ignore
             navigation.navigate("ViewTask", { task: TaskBuilder(data) });
         }
+    }
+
+    function handleDeleteTask(idTask: string) {
+        Alert.alert(
+            'Excluir produto',
+            'Clique em excluir para concluir a exclusão',
+            [
+                {
+                    text: 'Cancelar',
+                    onPress: () => console.log('Cancelar Pressionado'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'Excluir',
+                    onPress: () => { deleteTask(idTask) },
+                },
+            ],
+            { cancelable: false }
+        );
     }
 
     async function ToggleTaskStatus(idTask: string) {

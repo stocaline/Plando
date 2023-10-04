@@ -17,7 +17,7 @@ export async function getProduct(id : string) {
     }
 }
 
-export async function handleAddProduct(link : string) {
+export async function addProductOnlyLink(link : string) {
     const realm = await getRealm()
     var from = extractSiteName(link)
     var item = {

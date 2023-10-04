@@ -1,14 +1,16 @@
 import { SafeAreaView, StyleSheet, TextInput, Touchable, TouchableOpacity, View, Text, Linking, Image } from "react-native";
 import { Header } from "../../components/Header";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import Icon from "react-native-vector-icons/Feather";
 import { getProduct } from "../../utils/Products/ProductFunctions";
+import { builderProduct } from "../../utils/Products/Builder";
 
 //@ts-ignore
 export default function ViewProduct({ route }) {
     const { product } = route.params
 
+    const navigation = useNavigation();
     const [name, setName] = useState(product.name)
     const [price, setPrice] = useState(product.price)
     const [tagImage, setTagImage] = useState("")
@@ -16,6 +18,12 @@ export default function ViewProduct({ route }) {
     function openWebsite() {
         const url = product.link
         Linking.openURL(url);
+    }
+
+    function openEditProduct() {
+        const item = builderProduct(product)
+        //@ts-ignore
+        navigation.navigate("NewProduct", { product: item, title:"Editar Produto" })
     }
 
     useFocusEffect(useCallback(() => {
@@ -50,6 +58,9 @@ export default function ViewProduct({ route }) {
                     <Text style={styles.text}>Preço: {price || "Não sincronizado"}</Text>
                     <TouchableOpacity style={styles.btn} onPress={openWebsite}>
                         <Text style={styles.btnText}>Visitar Site</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.btn} onPress={openEditProduct}>
+                        <Text style={styles.btnText}>Editar Produto</Text>
                     </TouchableOpacity>
                 </View>
             </View>

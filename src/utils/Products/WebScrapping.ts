@@ -11,6 +11,7 @@ export function extractSiteName(url: string) {
 }
 
 async function kabumExtractProductInfo(id: string, url: string) {
+  var status = false
   await axios.get(url)
     .then(response => {
       if (response.status === 200) {
@@ -39,14 +40,14 @@ async function kabumExtractProductInfo(id: string, url: string) {
 
         updateProduct(id, title, "", price)
       }
+      status = true
     })
     .catch(error => {
+      status = false
       console.error('Erro ao buscar dados:', error);
-      return false
-    });
-  return true
+    })
+  return status
 }
-
 
 export async function searchProduct(id: any, url: any) {
   var status = false
@@ -56,6 +57,8 @@ export async function searchProduct(id: any, url: any) {
   if (siteName == "kabum") {
     status = await kabumExtractProductInfo(id, url)
   } else if (siteName == "mercadolivre") {
+    status = false
+  } else if (siteName == "aliexpress") {
     status = false
   }
   return status

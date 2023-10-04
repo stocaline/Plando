@@ -7,17 +7,17 @@ import Icon from "react-native-vector-icons/Feather";
 import { Header } from "../../components/Header";
 import { updateDesciptionTitle, updateTaskTitle } from "../../utils/task/TaskFunctions";
 import { ChildrenProps, TaskProps } from "../../@types/task";
-import { dateFormat } from "../../utils/data";
+import { dateFormat } from "../../utils/DateFunctions";
 
 //@ts-ignore
 export default function ViewTask({ route }) {
-    const navigation = useNavigation();
     const { task } = route.params
     const [isChecked, setIsChecked] = useState(false);
     const [title, setTitle] = useState(task.title);
     const [description, setDescription] = useState(task.description);
     const [historic, sethistoric] = useState(task.historic);
     const [taskFinishDate, setTaskFinishDate] = useState(task.finished_at);
+    const [saveBTNVisibility, setSaveBTNVisibility] = useState(false);
 
     async function ToggleTaskStatus(idTask: string): Promise<void> {
         const realm = await getRealm();
@@ -45,6 +45,7 @@ export default function ViewTask({ route }) {
 
     function handleInputDescriptionChange(text: string) {
         setDescription(text);
+        setSaveBTNVisibility(true)
     }
 
     useFocusEffect(useCallback(() => {
@@ -52,7 +53,7 @@ export default function ViewTask({ route }) {
             setIsChecked(true)
         }
 
-    },[]))
+    }, []))
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: task.color }]}>
@@ -71,32 +72,35 @@ export default function ViewTask({ route }) {
 
             <View style={styles.container}>
                 <View>
-                    <Text style={styles.text}>Descrição:</Text>
+                    <View style={styles.flex}>
+                        <Text style={styles.text}>Descrição:</Text>
+                        <Text style={[styles.text, { opacity: .5 }]}>{task.priority}</Text>
+                    </View>
                     <TextInput
                         style={styles.text}
                         multiline={true}
                         numberOfLines={4}
                         value={description}
                         onChangeText={handleInputDescriptionChange}
-                        onSubmitEditing={() => updateDesciptionTitle(task._id, description)}
-                        onPressOut={() => updateDesciptionTitle(task._id, description)}
                     />
-                    <Text style={styles.text}>Prioridade: {task.priority}</Text>
                     <Text style={styles.text}>Criado em: {dateFormat(task.created_at.slice(0, 10))}</Text>
                     {taskFinishDate != "" ?
-                        <Text style={styles.text}>Está tarefa foi finalizada em {dateFormat(taskFinishDate.slice(0, 10))}</Text>
+                        <Text style={styles.text}>Finalizada em {dateFormat(taskFinishDate.slice(0, 10))}</Text>
                         :
-                        <Text style={styles.text}>Está tarefa ainda não foi finalizada</Text>
+                        <Text style={styles.text}></Text>
                     }
                 </View>
                 <View style={[styles.btns, historic ? { opacity: .5 } : { opacity: 1 }]}>
-                <CheckBox
-                    title={isChecked ? 'Concluida' : "Em Andamento"}
-                    checked={isChecked}
-                    onPress={() => ToggleTaskStatus(task._id)}
-                    disabled={historic}
-                />
-            </View>
+                    <CheckBox
+                        title={isChecked ? 'Concluida' : "Em Andamento"}
+                        checked={isChecked}
+                        onPress={() => ToggleTaskStatus(task._id)}
+                        disabled={historic}
+                    />
+                    <TouchableOpacity style={[styles.addButton, saveBTNVisibility ? { display: "flex" } : { display: "none" }]} onPress={() => { updateDesciptionTitle(task._id, description), setSaveBTNVisibility(false) }}>
+                        <Text style={styles.buttonText}>Salvar</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </SafeAreaView>
     )
@@ -108,11 +112,16 @@ export const styles = StyleSheet.create({
         height: "100%",
     },
     container: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 30,
+        paddingTop: 20,
         height: "90%",
         backgroundColor: '#fff',
-        margin: 10,
-        borderRadius: 10,
+        borderRadius: 30,
+    },
+    flex: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
     main: {
         display: "flex",
@@ -132,5 +141,16 @@ export const styles = StyleSheet.create({
     btns: {
         display: 'flex',
         justifyContent: "center",
+    },
+    addButton: {
+        backgroundColor: '#0645ad',
+        borderRadius: 10,
+        padding: 15,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: 18,
     },
 });

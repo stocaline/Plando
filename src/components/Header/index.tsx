@@ -7,7 +7,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getRealm } from "../../database/realm";
 import { ChildrenProps, TaskProps } from '../../@types/task';
 import uuid from "react-native-uuid"
-import ViewTask from '../../screens/ViewTask';
 import { TaskBuilder } from '../../utils/task/Builder';
 import { getProduct } from '../../utils/Products/ProductFunctions';
 import { searchProduct } from '../../utils/Products/WebScrapping';
@@ -48,6 +47,20 @@ export function Header({ title, color, taskId, productId }: Props) {
         setInput(text);
     }
 
+    function errorSinc(){
+        Alert.alert(
+            'Não foi possivel sincronizar seu produto',
+            'No momento não foi possivel sincronizar, verifique sua conexão de rede e tente novamente mais tarde.',
+            [
+                {
+                    text: 'OK',
+                    onPress: () => { },
+                },
+            ],
+            { cancelable: true }
+        );
+    }
+
     async function handleSincInfo() {
         setIsLoading(true)
         var product = await getProduct(productId)
@@ -59,17 +72,7 @@ export function Header({ title, color, taskId, productId }: Props) {
             openProduct(item, navigation)
         } else {
             setIsLoading(false)
-            Alert.alert(
-                'Não foi possivel sincronizar seu produto',
-                'No momento não foi possivel sincronizar, verifique sua conexão de rede e tente novamente mais tarde.',
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => { },
-                    },
-                ],
-                { cancelable: true }
-            );
+            errorSinc()
         }
     }
 

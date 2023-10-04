@@ -1,5 +1,5 @@
 import { useCallback, useState, useRef, useEffect } from "react";
-import { SafeAreaView, Text, TouchableOpacity, View, StyleSheet, TextInput, Animated, Easing, Modal, FlatList, ProgressBarAndroidBase } from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, View, StyleSheet, TextInput, Animated, Easing, Modal, FlatList, ScrollView } from "react-native";
 import { CheckBox } from "react-native-elements";
 import { getRealm } from "../../database/realm";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -11,7 +11,7 @@ import { CalculateTaskPercent } from "../../utils/task/CalculateTaskPercent";
 //@ts-ignore
 import ProgressBar from 'react-native-progress/Bar';
 import { deleteSubTask, updateTaskTitleSubTask } from "../../utils/task/SubTaskFunctions";
-import { dateFormat } from "../../utils/data";
+import { dateFormat } from "../../utils/DateFunctions";
 
 //@ts-ignore
 export default function ViewSuperTask({ route }) {
@@ -26,6 +26,7 @@ export default function ViewSuperTask({ route }) {
     const [taskChildren, setTaskChildren] = useState(task.children)
     const [taskProgress, setTaskProgress] = useState(0)
     const [taskFinishDate, setTaskFinishDate] = useState(task.finished_at);
+    const [saveBTNVisibility, setSaveBTNVisibility] = useState(false);
 
     async function getChildrenTask() {
         const realm = await getRealm()
@@ -46,8 +47,6 @@ export default function ViewSuperTask({ route }) {
             console.log(e)
         }
     }
-
-
 
     async function setFinishedData(idTask: string, status: boolean): Promise<void> {
         const realm = await getRealm();
@@ -151,6 +150,7 @@ export default function ViewSuperTask({ route }) {
 
     function handleInputDescriptionChange(text: string) {
         setDescription(text);
+        setSaveBTNVisibility(true)
     }
 
     function handleInputChange(text: string) {
@@ -167,13 +167,14 @@ export default function ViewSuperTask({ route }) {
         } else {
             setFinishedData(task._id, false)
         }
-    
+
         getChildrenTask()
     }, [modalEditvisible, taskProgress]))
 
     return (
         <SafeAreaView style={[styles.safeArea, { backgroundColor: task.color }]}>
             <Header title="Super Tarefa" color={task.color} taskId={task._id} productId={""} />
+
             <View style={[styles.main, { backgroundColor: task.color }]}>
 
                 <TextInput
@@ -188,7 +189,10 @@ export default function ViewSuperTask({ route }) {
 
             <View style={styles.container}>
                 <View>
-                    <Text style={styles.text}>Descrição:</Text>
+                    <View style={styles.flex}>
+                        <Text style={styles.text}>Descrição:</Text>
+                        <Text style={[styles.text, { opacity: .5 }]}>{task.priority}</Text>
+                    </View>
                     <TextInput
                         style={styles.text}
                         multiline={true}
@@ -198,13 +202,15 @@ export default function ViewSuperTask({ route }) {
                         onSubmitEditing={() => updateDesciptionTitle(task._id, description)}
                         onPressOut={() => updateDesciptionTitle(task._id, description)}
                     />
-                    <Text style={styles.text}>Prioridade: {task.priority}</Text>
                     <Text style={styles.text}>Criado em: {dateFormat(task.created_at.slice(0, 10))}</Text>
                     {taskFinishDate != "" ?
                         <Text style={styles.text}>Está tarefa foi finalizada em {dateFormat(taskFinishDate.slice(0, 10))}</Text>
                         :
-                        <Text style={styles.text}>Está tarefa ainda não foi finalizada</Text>
+                        <Text style={styles.text}></Text>
                     }
+                    <TouchableOpacity style={[styles.addButton, saveBTNVisibility ? { display: "flex" } : { display: "none" }]} onPress={() => { updateDesciptionTitle(task._id, description), setSaveBTNVisibility(false) }}>
+                        <Text style={styles.buttonText}>Salvar</Text>
+                    </TouchableOpacity>
                 </View>
                 <Modal transparent visible={modalEditvisible}>
                     <SafeAreaView
@@ -250,11 +256,16 @@ export const styles = StyleSheet.create({
         height: "100%",
     },
     container: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 30,
+        paddingTop: 20,
         height: "90%",
         backgroundColor: '#fff',
-        margin: 10,
-        borderRadius: 10,
+        borderRadius: 30,
+    },
+    flex: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
     main: {
         display: "flex",
@@ -301,15 +312,15 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     list: {
-        flex: 1,
         width: '100%',
+        marginTop: 20,
     },
     listContent: {
         marginTop: 20,
         gap: 10,
     },
     footer: {
-        flex: 1
+        height: "50%"
     },
     containerCard: {
         display: 'flex',
@@ -387,6 +398,17 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     btnText: {
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: 18,
+    },
+    addButton: {
+        backgroundColor: '#0645ad',
+        borderRadius: 10,
+        padding: 15,
+        alignItems: 'center',
+    },
+    buttonText: {
         color: '#fff',
         fontWeight: '600',
         fontSize: 18,

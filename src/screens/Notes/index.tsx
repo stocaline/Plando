@@ -6,7 +6,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { deleteNote } from "../../utils/Notes/NotesFunctions";
 import { Text } from "react-native-elements";
 import { NoteProps } from "../../@types/note";
-import { dateFormat } from "../../utils/data";
+import { dateFormat } from "../../utils/DateFunctions";
 
 export default function Notes() {
 
