@@ -144,7 +144,7 @@ export default function Products() {
                                 placeholder="www.exemplo.com"
                                 onChangeText={handleInputChange}
                             />
-                            <Text style={{ color: "#000" }}>Sites integrados: Kabum, Mercado livre, Aliexpress</Text>
+                            <Text style={{ color: "#000" }}>Sites integrados: Kabum - Mercado livre.</Text>
                         </View>
                         <TouchableOpacity onPress={() => { addProductOnlyLink(inputLink), setModalAddvisible(false), setInputLink(""), handleFetchData() }} style={styles.modalAddBtn}>
                             <Text style={styles.btnText}>Adicionar Produto</Text>

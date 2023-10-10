@@ -59,7 +59,7 @@ export default function NewTask() {
                     onChangeText={setTitle}
                     placeholder="Título da tarefa"
                     placeholderTextColor="#303030"
-                    maxLength={20}
+                    maxLength={30}
                 />
 
                 <Text style={styles.label}>Descrição:</Text>
