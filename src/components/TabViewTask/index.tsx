@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react"
+import { styles } from "./styles";
 import { StyleSheet, SafeAreaView, Text, TouchableOpacity, FlatList, View } from "react-native"
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { getRealm } from "../../database/realm";
@@ -7,12 +8,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from "react-native-vector-icons/Feather";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { TaskProps } from "../../@types/task";
+import { useGlobalContext } from "../../contexts/GlobalContex";
+
 
 export default function TabViewTask() {
 
     const navigation = useNavigation();
 
-    const [data, setData] = useState<TaskProps[]>();
+    const { tasksList, setTasksList } = useGlobalContext()
+
     const [dataHistoric, setDataHistoric] = useState<TaskProps[]>();
     const [totalTasksNumber, setTotalTasksNumber] = useState(0);
 
@@ -102,10 +106,11 @@ export default function TabViewTask() {
             })
             setTotalTasksNumber(taskPriority1.length + taskPriority2.length + taskPriority3.length)
             var orderedTasks = taskPriority1.concat(taskPriority2, taskPriority3, taskFinished);
-            setData(orderedTasks)
+            setTasksList(orderedTasks)
 
         }
     }
+    
     async function deleteCache() {
         const realm = await getRealm()
         try {
@@ -126,9 +131,9 @@ export default function TabViewTask() {
     const FirstRoute = () => (
         <SafeAreaView style={styles.container}>
             {totalTasksNumber != 0 ? <Text style={styles.totalTasks}>Total de tarefas: {totalTasksNumber}</Text> : <Text style={{ color: "#000", margin: 10 }}>Sem Tarefas registradas</Text>}
-            {data?.length != 0 ?
+            {tasksList?.length != 0 ?
                 <FlatList
-                    data={data}
+                    data={tasksList}
                     keyExtractor={item => item._id}
                     style={styles.list}
                     contentContainerStyle={styles.listContent}
@@ -199,55 +204,3 @@ export default function TabViewTask() {
         />
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#e7e7e7",
-        color: "#fff",
-    },
-    title: {
-        fontSize: 36,
-        textAlign: "center",
-        fontWeight: 'bold',
-        color: '#fff',
-        position: 'relative',
-        bottom: -10,
-        textShadowColor: 'rgba(0, 0, 0, 0.3)',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 2,
-        marginBottom: 10,
-    },
-    totalTasks: {
-        margin: 10,
-        color: "#303030"
-    },
-    list: {
-        flex: 1,
-        width: '100%',
-    },
-    listContent: {
-        padding: 24,
-        paddingBottom: 150,
-        gap: 10,
-    },
-    bottomBar: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    bottomButtons: {
-        height: 50,
-        width: "100%",
-    },
-    btnAddTask: {
-        position: "absolute",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#0645ad",
-        borderRadius: 100,
-        width: 50,
-        height: 50,
-    },
-})
