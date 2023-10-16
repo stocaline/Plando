@@ -1,4 +1,5 @@
 import { Animated, Easing, StatusBar, Text, TouchableOpacity, View, Modal, TextInput, Alert, ActivityIndicator } from 'react-native';
+import { styles } from './styles';
 import Icon from "react-native-vector-icons/Feather"
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +12,8 @@ import { TaskBuilder } from '../../utils/task/Builder';
 import { getProduct } from '../../utils/Products/ProductFunctions';
 import { searchProduct } from '../../utils/Products/WebScrapping';
 import { openProduct } from '../../utils/Products/Builder';
+import { deleteTask } from '../../utils/task/TaskFunctions';
+
 
 type Props = {
     title: string;
@@ -34,7 +37,7 @@ export function Header({ title, color, taskId, productId }: Props) {
         {
             title: "Excluir",
             color: "red",
-            action: () => handlePrepareTaskForDelete()
+            action: () => handleTaskDelete()
         },
         {
             title: "+ Tarefa",
@@ -47,7 +50,7 @@ export function Header({ title, color, taskId, productId }: Props) {
         setInput(text);
     }
 
-    function errorSinc(){
+    function errorSinc() {
         Alert.alert(
             'Não foi possivel sincronizar seu produto',
             'No momento não foi possivel sincronizar, verifique sua conexão de rede e tente novamente mais tarde.',
@@ -97,18 +100,9 @@ export function Header({ title, color, taskId, productId }: Props) {
         }
     }
 
-    async function handlePrepareTaskForDelete() {
-        const realm = await getRealm()
-
-        try {
-            realm.write(() => {
-                const objectToDelete = realm.objectForPrimaryKey("Task", taskId);
-                objectToDelete!.title = "DELETED";
-            });
-            navigation.goBack()
-        } catch (e) {
-            console.log(e)
-        }
+    async function handleTaskDelete() {
+        await deleteTask(taskId)
+        navigation.goBack()
     }
 
     function handleAddSubTask() {
@@ -207,47 +201,47 @@ export function Header({ title, color, taskId, productId }: Props) {
                     />
                 </TouchableOpacity>
             )
-             } else if (title == "Produtos") {
-                const handleNavigateToHome = () => {
-                    navigation.reset({
-                        index: 0,
-                        //@ts-ignore
-                        routes: [{ name: 'Home' }]
-                    });
-                };
-                return (
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={handleNavigateToHome}
-                    >
-                        <Icon
-                            name='chevron-left'
-                            color={"#fff"}
-                            size={40}
-                        />
-                    </TouchableOpacity>
-                )
-             } else if (title == "Produto") {
-                const handleNavigateToProducts = () => {
-                    navigation.reset({
-                        index: 0,
-                        //@ts-ignore
-                        routes: [{ name: 'Products' }]
-                    });
-                };
-                return (
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={handleNavigateToProducts}
-                    >
-                        <Icon
-                            name='chevron-left'
-                            color={"#fff"}
-                            size={40}
-                        />
-                    </TouchableOpacity>
-                )
-            } else {
+        } else if (title == "Produtos") {
+            const handleNavigateToHome = () => {
+                navigation.reset({
+                    index: 0,
+                    //@ts-ignore
+                    routes: [{ name: 'Home' }]
+                });
+            };
+            return (
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleNavigateToHome}
+                >
+                    <Icon
+                        name='chevron-left'
+                        color={"#fff"}
+                        size={40}
+                    />
+                </TouchableOpacity>
+            )
+        } else if (title == "Produto") {
+            const handleNavigateToProducts = () => {
+                navigation.reset({
+                    index: 0,
+                    //@ts-ignore
+                    routes: [{ name: 'Products' }]
+                });
+            };
+            return (
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleNavigateToProducts}
+                >
+                    <Icon
+                        name='chevron-left'
+                        color={"#fff"}
+                        size={40}
+                    />
+                </TouchableOpacity>
+            )
+        } else {
             return (
                 <TouchableOpacity
                     style={styles.button}
@@ -423,97 +417,3 @@ export function Header({ title, color, taskId, productId }: Props) {
 
     );
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        height: 70,
-        width: '100%',
-        backgroundColor: '#0645ad',
-        flexDirection: 'row',
-        justifyContent: "space-between",
-        alignItems: 'center',
-    },
-    content: {
-        flex: 1,
-        justifyContent: "center",
-    },
-    title: {
-        fontSize: 20,
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-    button: {
-        height: 80,
-        width: 56,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    popup: {
-        flex: 1,
-        borderRadius: 8,
-        borderColor: "#333",
-        padding: 10,
-        position: "absolute",
-        top: 50,
-        right: 20,
-        backgroundColor: "white",
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    popupAddTask: {
-        flex: 1,
-        width: "80%",
-        borderRadius: 8,
-        borderColor: "#333",
-        padding: 10,
-        position: "absolute",
-        alignSelf: 'center',
-        gap: 20,
-        backgroundColor: "white",
-        zIndex: 100,
-    },
-    label: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10
-    },
-    input: {
-        width: "100%",
-        height: 40,
-        borderWidth: 1,
-        borderColor: "#303030",
-        borderRadius: 10,
-        color: "#000",
-    },
-    option: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingVertical: 7,
-        borderBottomColor: "#ccc",
-    },
-    addButton: {
-        backgroundColor: '#0645ad',
-        borderRadius: 10,
-        padding: 15,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontWeight: '600',
-        fontSize: 18,
-    },
-    loadingContainer: {
-        width: "100%",
-        height: "100%",
-        position: 'absolute',
-        backgroundColor: "rgba(0,0,0,0.2)",
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center',
-        zIndex: 999,
-    },
-});

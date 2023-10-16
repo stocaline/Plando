@@ -1,5 +1,31 @@
 import { TaskProps } from "../../@types/task";
+import { useGlobalContext } from "../../contexts/GlobalContex";
 import { getRealm } from "../../database/realm";
+
+export function orderTasks(tasks: TaskProps[]) {
+    if (tasks) {
+        var taskPriority1: TaskProps[] = []
+        var taskPriority2: TaskProps[] = []
+        var taskPriority3: TaskProps[] = []
+        var taskFinished: TaskProps[] = []
+        tasks.forEach(task => {
+            if (task.finished_at == "") {
+                if (task.priority == "Urgente") {
+                    taskPriority1.push(task)
+                } else if (task.priority == "Normal") {
+                    taskPriority2.push(task)
+                } else {
+                    taskPriority3.push(task)
+                }
+            } else {
+                taskFinished.unshift(task)
+            }
+        })
+        //var TotalTasksAmount = taskPriority1.length + taskPriority2.length + taskPriority3.length
+        var orderedTasks = taskPriority1.concat(taskPriority2, taskPriority3, taskFinished);
+        return orderedTasks
+    }
+}
 
 export async function getTask(taskId: string) {
     const realm = await getRealm();
