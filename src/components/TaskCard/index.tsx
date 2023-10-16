@@ -1,7 +1,8 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { styles } from './styles';
+import { useNavigation } from "@react-navigation/native";
 import { getRealm } from '../../database/realm';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CheckBox } from 'react-native-elements';
 import { TaskProps } from '../../@types/task';
 import { CalculateTaskPercent } from '../../utils/task/CalculateTaskPercent';
@@ -9,6 +10,8 @@ import { CalculateTaskPercent } from '../../utils/task/CalculateTaskPercent';
 import ProgressBar from 'react-native-progress/Bar';
 import { TaskBuilder } from '../../utils/task/Builder';
 import { deleteTask } from '../../utils/task/TaskFunctions';
+import { useGlobalContext } from '../../contexts/GlobalContex';
+import {orderTasks} from '../../utils/task/TaskFunctions'
 
 type Props = {
     data: TaskProps;
@@ -17,6 +20,7 @@ type Props = {
 
 export function TaskCard({ data, disable }: Props) {
 
+    const { tasksList, setTasksList } = useGlobalContext()
     const navigation = useNavigation();
     const [isChecked, setIsChecked] = useState(false);
 
@@ -30,23 +34,41 @@ export function TaskCard({ data, disable }: Props) {
         }
     }
 
-    function handleDeleteTask(idTask: string) {
+    async function handleDeleteTask(idTask: string) {
         Alert.alert(
-            'Excluir produto',
+            'Excluir tarefa?',
             'Clique em excluir para concluir a exclusão',
             [
                 {
                     text: 'Cancelar',
-                    onPress: () => console.log('Cancelar Pressionado'),
+                    onPress: () => {},
                     style: 'cancel',
                 },
                 {
                     text: 'Excluir',
-                    onPress: () => { deleteTask(idTask) },
+                    //@ts-ignore
+                    onPress: () => { 
+                        deleteTask(idTask), getDataTasks()
+                    },
                 },
             ],
             { cancelable: false }
-        );
+            );
+    }
+
+    async function getDataTasks() {
+        const realm = await getRealm()
+    
+        try {
+            const response = realm.objects("Task").filtered('historic == false AND title != "DELETED"');
+            //@ts-ignore
+            setTasksList(orderTasks(response))
+        } catch (e) {
+            console.log(e)
+        } finally {
+            realm.close
+        }
+    
     }
 
     async function ToggleTaskStatus(idTask: string) {
@@ -71,23 +93,21 @@ export function TaskCard({ data, disable }: Props) {
         if (conclusionPercente == 1) {
             return (
                 <View style={styles.contentSuperDone}>
-                    <TouchableOpacity
+                    <View
                         style={styles.cardNameSuper}
-                        onPress={() => handleOpenTask()}
                     >
                         <Text style={{ color: "#303030", fontWeight: "600" }}>{data.title}</Text>
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{color: data.color, fontWeight: '900'}}>CONCLUIDO!</Text>
                         </View>
-                    </TouchableOpacity>
+                    </View>
                 </View>
             )
         } else {
             return (
                 <View style={styles.contentSuper}>
-                    <TouchableOpacity
+                    <View
                         style={styles.cardNameSuper}
-                        onPress={() => handleOpenTask()}
                     >
                         <Text style={{ color: "#303030", fontWeight: "600", width: "45%" }}>{data.title}</Text>
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -98,25 +118,24 @@ export function TaskCard({ data, disable }: Props) {
                                 color={data.color}
                             />
                         </View>
-                    </TouchableOpacity>
+                    </View>
                 </View>
             )
         }
     }
 
     return (
-        <View style={data.finished_at == "" ? styles.container : styles.containerStatusDone}>
+        <TouchableOpacity onLongPress={() => handleDeleteTask(data._id)} onPress={() => handleOpenTask()} style={data.finished_at == "" ? styles.container : styles.containerStatusDone}>
             <View style={[styles.tag, { backgroundColor: data.color }]}></View>
             {data.super ?
                 generateCardSuper()
                 :
                 <View style={styles.content}>
-                    <TouchableOpacity
+                    <View
                         style={styles.cardName}
-                        onPress={() => handleOpenTask()}
                     >
                         <Text style={{ color: "#303030", fontWeight: "600" }}>{data.title}</Text>
-                    </TouchableOpacity>
+                    </View>
                     <CheckBox
                         checked={data.finished_at == "" ? false : true}
                         onPress={() => ToggleTaskStatus(data._id)}
@@ -124,67 +143,6 @@ export function TaskCard({ data, disable }: Props) {
                     />
                 </View>
             }
-        </View>
+        </TouchableOpacity>
     );
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        overflow: 'hidden'
-    },
-    contentSuper: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 80,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        overflow: 'hidden'
-    },
-    contentSuperDone: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 80,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        overflow: 'hidden',
-        opacity: 0.5,
-    },
-    containerStatusDone: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        overflow: 'hidden',
-        opacity: 0.5,
-    },
-    content: {
-        display: 'flex',
-        width: "95%",
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    tag: {
-        height: "100%",
-        width: 10,
-    },
-    cardName: {
-        marginLeft: "10%",
-    },
-    cardNameSuper: {
-        display: 'flex',
-        width: "80%",
-        marginLeft: "10%",
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: 5,
-    },
-});

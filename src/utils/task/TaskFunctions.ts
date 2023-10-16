@@ -1,5 +1,4 @@
 import { TaskProps } from "../../@types/task";
-import { useGlobalContext } from "../../contexts/GlobalContex";
 import { getRealm } from "../../database/realm";
 
 export function orderTasks(tasks: TaskProps[]) {
