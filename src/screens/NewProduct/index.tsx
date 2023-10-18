@@ -14,6 +14,7 @@ export default function NewProduct({ route }) {
 
     const navigation = useNavigation();
 
+    const [id, setId] = useState(product?._id || uuid.v4());
     const [name, setName] = useState(product?.name || "");
     const [link, setLink] = useState(product?.link || "");
     const [price, setPrice] = useState(product?.price || "");
@@ -38,7 +39,7 @@ export default function NewProduct({ route }) {
         try {
             realm.write(() => {
                 realm.create("Products", {
-                    _id: uuid.v4(),
+                    _id: id,
                     name: name,
                     link: link,
                     price: price,
@@ -48,12 +49,13 @@ export default function NewProduct({ route }) {
                     created_at: new Date().toISOString().slice(0, 10),
                 })
             })
+
             cleanFormInputs()
 
         } catch (e) {
             console.log(e)
         } finally {
-            if(goBack){
+            if (goBack) {
                 navigation.goBack()
             }
             realm.close

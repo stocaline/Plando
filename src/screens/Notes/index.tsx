@@ -1,4 +1,5 @@
-import { Alert, FlatList, SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, SafeAreaView, TouchableOpacity, View, Image } from "react-native";
+import { styles } from "./styles";
 import { Header } from "../../components/Header";
 import { getRealm } from "../../database/realm";
 import { useCallback, useState } from "react";
@@ -7,6 +8,7 @@ import { deleteNote } from "../../utils/Notes/NotesFunctions";
 import { Text } from "react-native-elements";
 import { NoteProps } from "../../@types/note";
 import { dateFormat } from "../../utils/DateFunctions";
+import notesImage from "../../assets/imgs/notesImage.png";
 
 export default function Notes() {
 
@@ -82,8 +84,10 @@ export default function Notes() {
                                 onPress={() => openNote(item)}
                                 onLongPress={() => handleDeleteNote(item._id)}
                             >
-
-                                <Text style={{ color: "#0645ad" }}>{item.title}</Text>
+                                <View style={styles.titleView}>
+                                    <Image source={notesImage} style={{ width: 30, height: 23}} />
+                                    <Text style={{ color: "#0645ad", maxWidth: "90%" }}>{item.title == "" ? "Sem Titulo" : item.title.slice(0,20)}</Text>
+                                </View>
                                 <Text style={{ color: "#303030" }}>{item.text.slice(0, 20)}</Text>
                                 <Text style={{ color: "#252525" }}>{dateFormat(item.updated_at.toISOString())}</Text>
 
@@ -97,32 +101,3 @@ export default function Notes() {
         </SafeAreaView>
     )
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        display: "flex",
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    list: {
-        display: "flex",
-        width: "90%",
-        marginTop: 20,
-    },
-    listContent: {
-        display: "flex",
-        alignItems: "center",
-        gap: 30,
-    },
-    cardNote: {
-        width: 150,
-        height: 120,
-        backgroundColor: "white",
-        borderRadius: 5,
-        padding: 5,
-        display: "flex",
-        justifyContent: "space-between",
-        elevation: 2,
-    },
-})

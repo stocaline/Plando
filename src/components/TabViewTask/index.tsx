@@ -18,9 +18,9 @@ export default function TabViewTask() {
     const [totalTasksNumber, setTotalTasksNumber] = useState(0);
 
     const [index, setIndex] = useState(0);
-    const [routes] = useState([
-        { key: 'first', title: 'Tarefas' },
-        { key: 'second', title: 'Histórico' },
+    const [routes, setRoutes] = useState([
+        { key: 'first', title: `Tarefas` },
+        { key: 'second', title: `Histórico` },
     ]);
 
     async function handleFetchData() {
@@ -28,7 +28,7 @@ export default function TabViewTask() {
 
         try {
             const response = realm.objects("Task").filtered('historic == false AND title != "DELETED"');
-            const responseHistoric = realm.objects("Task").filtered('historic == true');
+            const responseHistoric = realm.objects("Task").filtered('historic == true').sorted('created_at', false);
             //@ts-ignore
             setTasksList(orderTasks(response))
             setTotalTasksNumber(response.filtered('finished_at == ""').length)

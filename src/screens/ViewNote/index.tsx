@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, TextInput, Touchable, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, TextInput, Touchable, TouchableOpacity, View } from "react-native";
 import { Header } from "../../components/Header";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
@@ -26,19 +26,22 @@ export default function ViewNote({ route }) {
     }
 
     return (
-        <SafeAreaView>
+        <ScrollView>
             <Header title="Anotação" color={"#0645ad"} taskId={""} productId={""} />
             <View style={styles.container}>
                 <TextInput
                     style={styles.title}
                     value={title}
+                    multiline={true}
+                    placeholder="Sem titulo"
                     onChangeText={handleInputTitleChange}
+                    scrollEnabled={false}
                     maxLength={30}
                 />
                 <TextInput
                     style={styles.text}
                     multiline={true}
-                    numberOfLines={4}
+                    scrollEnabled={false}
                     value={text}
                     onChangeText={handleInputDescriptionChange}
                 />
@@ -46,7 +49,7 @@ export default function ViewNote({ route }) {
                     <Text style={styles.buttonText}>Salvar</Text>
                 </TouchableOpacity>
             </View>
-        </SafeAreaView>
+        </ScrollView>
     )
 }
 
@@ -56,13 +59,16 @@ export const styles = StyleSheet.create({
         margin: 20,
     },
     title: {
+        textAlignVertical: "top",
         color: "#000",
         fontWeight: "500",
         fontSize: 30
     },
     text: {
+        textAlignVertical: "top",
         color: "#000",
-        fontSize: 15
+        fontSize: 15,
+        marginBottom: 10,
     },
     addButton: {
         backgroundColor: '#0645ad',

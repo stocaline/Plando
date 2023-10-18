@@ -1,7 +1,7 @@
 import { StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './styles';
 import Icon from "react-native-vector-icons/Feather"
-import BtnReturn from '../HeaderBtns/BtnReturnHeader/index';
+import BtnReturn from '../HeaderBtns/BtnReturn/index';
 import BtnActionNotes from '../HeaderBtns/BtnActionNotes';
 import BtnActionProducts from '../HeaderBtns/BtnActionProducts';
 import BtnActionAllTasks from '../HeaderBtns/BtnActionAllTasks';
