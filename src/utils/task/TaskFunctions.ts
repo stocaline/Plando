@@ -62,12 +62,13 @@ export async function changeTaskToNormal(taskid: string) {
     }
 }
 
-export async function updateDesciptionTitle(taskid: string, newDescription: string) {
+export async function updateTask(taskid: string, newTitle: string, newDescription: string) {
     const realm = await getRealm();
 
     try {
         realm.write(() => {
             const task = realm.objectForPrimaryKey<TaskProps>("Task", taskid);
+            task!.title = newTitle;
             task!.description = newDescription;
         });
     } catch (error) {

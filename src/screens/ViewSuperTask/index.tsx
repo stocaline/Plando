@@ -5,7 +5,7 @@ import { getRealm } from "../../database/realm";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Feather";
 import { Header } from "../../components/Header";
-import { changeTaskToNormal, updateDesciptionTitle, updateTaskTitle } from "../../utils/task/TaskFunctions";
+import { changeTaskToNormal, updateTask, updateTaskTitle } from "../../utils/task/TaskFunctions";
 import { ChildrenProps, TaskProps } from "../../@types/task";
 import { CalculateTaskPercent } from "../../utils/task/CalculateTaskPercent";
 //@ts-ignore
@@ -146,6 +146,7 @@ export default function ViewSuperTask({ route }) {
         if (text != "") {
             setTitle(text);
         }
+        setSaveBTNVisibility(true)
     }
 
     function handleInputDescriptionChange(text: string) {
@@ -180,9 +181,10 @@ export default function ViewSuperTask({ route }) {
                 <TextInput
                     style={styles.title}
                     value={title}
+                    multiline={true}
+                    scrollEnabled={false}
                     onChangeText={handleInputTitleChange}
-                    onSubmitEditing={() => updateTaskTitle(task._id, title)}
-                    maxLength={30}
+                    maxLength={50}
                 />
 
             </View>
@@ -194,13 +196,11 @@ export default function ViewSuperTask({ route }) {
                         <Text style={[styles.text, { opacity: .5 }]}>{task.priority}</Text>
                     </View>
                     <TextInput
-                        style={styles.text}
+                        style={[styles.text, { textAlignVertical: "top", }]}
                         multiline={true}
-                        numberOfLines={4}
+                        scrollEnabled={false}
                         value={description}
                         onChangeText={handleInputDescriptionChange}
-                        onSubmitEditing={() => updateDesciptionTitle(task._id, description)}
-                        onPressOut={() => updateDesciptionTitle(task._id, description)}
                     />
                     <Text style={styles.text}>Criado em: {dateFormat(task.created_at.slice(0, 10))}</Text>
                     {taskFinishDate != "" ?
@@ -208,7 +208,7 @@ export default function ViewSuperTask({ route }) {
                         :
                         <Text style={styles.text}></Text>
                     }
-                    <TouchableOpacity style={[styles.addButton, saveBTNVisibility ? { display: "flex" } : { display: "none" }]} onPress={() => { updateDesciptionTitle(task._id, description), setSaveBTNVisibility(false) }}>
+                    <TouchableOpacity style={[styles.addButton, saveBTNVisibility ? { display: "flex" } : { display: "none" }]} onPress={() => { updateTask(task._id, title, description), setSaveBTNVisibility(false) }}>
                         <Text style={styles.buttonText}>Salvar</Text>
                     </TouchableOpacity>
                 </View>
@@ -278,6 +278,8 @@ export const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 25,
         alignSelf: "center",
+        textAlign: "center",
+        paddingHorizontal: 10,
     },
     text: {
         color: "#000"
