@@ -1,6 +1,7 @@
-import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import { styles } from "./styles";
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { getRealm } from "../../database/realm";
 import uuid from "react-native-uuid"
 import { Header } from "../../components/Header";
@@ -50,7 +51,7 @@ export default function NewTask() {
 
     return (
         <SafeAreaView >
-            <Header title="Nova Tarefa" color={"#0645ad"} taskId="" productId={""}/>
+            <Header title="Nova Tarefa" color={"#0645ad"} taskId="" productId={""} />
             <View style={styles.container}>
                 <Text style={styles.label}>Título:</Text>
                 <TextInput
@@ -106,57 +107,3 @@ export default function NewTask() {
         </SafeAreaView >
     )
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        padding: 20,
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 5,
-        color: "#000",
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 10,
-        fontSize: 16,
-        marginBottom: 10,
-        color: "#000",
-    },
-    picker: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        marginBottom: 10,
-        color: "#303030",
-    },
-    colorContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        height: 60,
-        marginBottom: 10,
-    },
-    colorCircle: {
-        width: 30,
-        height: 30,
-        borderRadius: 15,
-    },
-    selectedColorCircle: {
-        borderWidth: 2,
-        borderColor: 'black',
-    },
-    addButton: {
-        backgroundColor: '#0645ad',
-        borderRadius: 10,
-        padding: 15,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontWeight: '600',
-        fontSize: 18,
-    },
-})

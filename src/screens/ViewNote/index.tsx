@@ -1,17 +1,14 @@
-import { SafeAreaView, ScrollView, StyleSheet, TextInput, Touchable, TouchableOpacity, View } from "react-native";
+import { ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+import { styles } from "./styles";
 import { Header } from "../../components/Header";
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState } from "react";
-import { getNote, handleUpdateNote, updateNoteTitle } from "../../utils/Notes/NotesFunctions";
+import { useState } from "react";
+import { handleUpdateNote } from "../../utils/Notes/NotesFunctions";
 import { NoteProps } from "../../@types/note";
 import { Text } from "react-native-elements";
 
-//@ts-ignore
-export default function ViewNote({ route }) {
+export default function ViewNote({ route }: any) {
     const { note } = route.params
-    //@ts-ignore
     const [title, setTitle] = useState(note!.title)
-    //@ts-ignore
     const [text, setText] = useState(note!.text)
     const [updated, setUpdated] = useState(false)
 
@@ -52,34 +49,3 @@ export default function ViewNote({ route }) {
         </ScrollView>
     )
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        display: "flex",
-        margin: 20,
-    },
-    title: {
-        textAlignVertical: "top",
-        color: "#000",
-        fontWeight: "500",
-        fontSize: 30
-    },
-    text: {
-        textAlignVertical: "top",
-        color: "#000",
-        fontSize: 15,
-        marginBottom: 10,
-    },
-    addButton: {
-        backgroundColor: '#0645ad',
-        borderRadius: 10,
-        padding: 15,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontWeight: '600',
-        fontSize: 18,
-    },
-
-})

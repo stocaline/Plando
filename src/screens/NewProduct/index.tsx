@@ -1,6 +1,6 @@
-import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
+import { styles } from "./styles";
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { getRealm } from "../../database/realm";
 import uuid from "react-native-uuid"
 import { Header } from "../../components/Header";
@@ -8,8 +8,7 @@ import { extractSiteName } from "../../utils/Products/WebScrapping";
 import { updateProduct } from "../../utils/Products/ProductFunctions";
 import { useNavigation } from "@react-navigation/native";
 
-//@ts-ignore
-export default function NewProduct({ route }) {
+export default function NewProduct({ route }: any) {
     const { product, title } = route.params || { product: null, title: "Novo Produto" }
 
     const navigation = useNavigation();
@@ -107,35 +106,3 @@ export default function NewProduct({ route }) {
         </SafeAreaView >
     )
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        padding: 20,
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 5,
-        color: "#000",
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 10,
-        fontSize: 16,
-        marginBottom: 10,
-        color: "#000",
-    },
-    addButton: {
-        marginTop: 40,
-        backgroundColor: '#0645ad',
-        borderRadius: 10,
-        padding: 15,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontWeight: '600',
-        fontSize: 18,
-    },
-})

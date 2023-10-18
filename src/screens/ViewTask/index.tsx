@@ -1,16 +1,16 @@
-import { useCallback, useState, useRef, useEffect } from "react";
-import { SafeAreaView, Text, TouchableOpacity, View, StyleSheet, TextInput, Animated, Easing, Modal, FlatList, ProgressBarAndroidBase } from "react-native";
+import { useCallback, useState } from "react";
+import { styles } from "./styles";
+import { SafeAreaView, Text, TouchableOpacity, View, StyleSheet, TextInput} from "react-native";
 import { CheckBox } from "react-native-elements";
 import { getRealm } from "../../database/realm";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Feather";
 import { Header } from "../../components/Header";
-import { updateTask, updateTaskTitle } from "../../utils/task/TaskFunctions";
-import { ChildrenProps, TaskProps } from "../../@types/task";
+import { updateTask } from "../../utils/task/TaskFunctions";
+import { TaskProps } from "../../@types/task";
 import { dateFormat } from "../../utils/DateFunctions";
 
-//@ts-ignore
-export default function ViewTask({ route }) {
+export default function ViewTask({ route }: any) {
     const { task } = route.params
     const [isChecked, setIsChecked] = useState(false);
     const [title, setTitle] = useState(task.title);
@@ -107,54 +107,3 @@ export default function ViewTask({ route }) {
         </SafeAreaView>
     )
 }
-
-export const styles = StyleSheet.create({
-    safeArea: {
-        width: "100%",
-        height: "100%",
-    },
-    container: {
-        paddingHorizontal: 30,
-        paddingTop: 20,
-        height: "90%",
-        backgroundColor: '#fff',
-        borderRadius: 30,
-    },
-    flex: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-    },
-    main: {
-        display: "flex",
-        width: "100%",
-        height: 100,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    title: {
-        color: "#fff",
-        fontSize: 25,
-        alignSelf: "center",
-        textAlign: "center",
-        paddingHorizontal: 10,
-    },
-    text: {
-        color: "#000"
-    },
-    btns: {
-        display: 'flex',
-        justifyContent: "center",
-    },
-    addButton: {
-        backgroundColor: '#0645ad',
-        borderRadius: 10,
-        padding: 15,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontWeight: '600',
-        fontSize: 18,
-    },
-});

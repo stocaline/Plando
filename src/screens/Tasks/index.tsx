@@ -1,4 +1,5 @@
-import { StyleSheet, SafeAreaView } from "react-native"
+import { SafeAreaView } from "react-native"
+import { styles } from "./styles";
 import { Header } from "../../components/Header";
 import TabViewTask from "../../components/TabViewTask";
 
@@ -11,9 +12,3 @@ export default function Tasks() {
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-})
