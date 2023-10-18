@@ -50,6 +50,7 @@ export const styles = StyleSheet.create({
     },
     cardName: {
         marginLeft: "10%",
+        width: "70%"
     },
     cardNameSuper: {
         display: 'flex',

@@ -10,6 +10,7 @@ import ViewNote from "../screens/ViewNote"
 import Products from "../screens/Products"
 import ViewProduct from "../screens/ViewProduct"
 import NewProduct from "../screens/NewProduct"
+import ShoppingList from "../screens/ShoppingList"
 
 const Stack = createNativeStackNavigator()
 
@@ -26,6 +27,7 @@ function AppRoutes() {
                 <Stack.Screen name="Products" component={Products} options={{ headerShown: false }} />
                 <Stack.Screen name="ViewProduct" component={ViewProduct} options={{ headerShown: false }} />
                 <Stack.Screen name="NewProduct" component={NewProduct} options={{ headerShown: false }} />
+                <Stack.Screen name="ShoppingList" component={ShoppingList} options={{ headerShown: false }} />
             </Stack.Navigator>
     )
 }
